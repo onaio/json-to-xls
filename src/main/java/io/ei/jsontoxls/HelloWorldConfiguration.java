@@ -1,4 +1,4 @@
-package com.example.helloworld;
+package io.ei.jsontoxls;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yammer.dropwizard.config.Configuration;

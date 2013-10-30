@@ -1,4 +1,4 @@
-package com.example.helloworld.health;
+package io.ei.jsontoxls.health;
 
 import com.yammer.metrics.core.HealthCheck;
 

@@ -1,4 +1,4 @@
-package com.example.helloworld.core;
+package io.ei.jsontoxls.core;
 
 public class Saying {
     private final long id;

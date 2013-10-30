@@ -1,10 +1,10 @@
-package com.example.helloworld;
+package io.ei.jsontoxls;
 
-import com.example.helloworld.health.TemplateHealthCheck;
-import com.example.helloworld.resources.HelloWorldResource;
 import com.yammer.dropwizard.Service;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
+import io.ei.jsontoxls.health.TemplateHealthCheck;
+import io.ei.jsontoxls.resources.HelloWorldResource;
 
 public class HelloWorldService extends Service<HelloWorldConfiguration> {
     public static void main(String[] args) throws Exception {

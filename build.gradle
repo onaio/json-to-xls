@@ -10,7 +10,7 @@ dependencies {
 
 apply plugin: 'application'
 
-mainClassName = 'com.spike.helloworld.HelloWorldService'
+mainClassName = 'io.ei.jsontoxls.HelloWorldService'
 
 run {
     args 'server', 'hello-world.yml'

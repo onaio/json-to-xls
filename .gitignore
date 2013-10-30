@@ -11,3 +11,4 @@ logfile
 *.log*
 .gradle
 build/
+classes/

@@ -1,6 +1,6 @@
-package com.example.helloworld.resources;
+package io.ei.jsontoxls.resources;
 
-import com.example.helloworld.core.Saying;
+import io.ei.jsontoxls.core.Saying;
 import com.google.common.base.Optional;
 import com.yammer.metrics.annotation.Timed;
 
