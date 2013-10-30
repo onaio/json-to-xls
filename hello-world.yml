@@ -1,2 +1,3 @@
 template: Hello, %s!
 defaultName: Anamika
+xlsTemplate: defaultTemplate.xls

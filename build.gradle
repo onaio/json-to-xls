@@ -10,7 +10,7 @@ dependencies {
 
 apply plugin: 'application'
 
-mainClassName = 'io.ei.jsontoxls.HelloWorldService'
+mainClassName = 'io.ei.jsontoxls.JsonToXlsService'
 
 run {
     args 'server', 'hello-world.yml'
