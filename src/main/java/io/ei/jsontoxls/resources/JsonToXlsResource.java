@@ -1,5 +1,10 @@
 package io.ei.jsontoxls.resources;
 
+import io.ei.jsontoxls.core.Employee;
+import net.sf.jxls.transformer.XLSTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -8,10 +13,15 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 @Path("/xls")
 @Produces({"application/ms-excel"})
 public class JsonToXlsResource {
+    Logger logger = LoggerFactory.getLogger(JsonToXlsResource.class);
     private final String excelTemplate;
 
     public JsonToXlsResource(String excelTemplate) {
@@ -20,6 +30,22 @@ public class JsonToXlsResource {
 
     @GET
     public Response generateExcelFromTemplate() {
+        Collection staff = new HashSet();
+        staff.add(new Employee("Derek", 35, 3000, 0.30));
+        staff.add(new Employee("Elsa", 28, 1500, 0.15));
+        staff.add(new Employee("Oleg", 32, 2300, 0.25));
+        staff.add(new Employee("Neil", 34, 2500, 0.00));
+        staff.add(new Employee("Maria", 34, 1700, 0.15));
+        staff.add(new Employee("John", 35, 2800, 0.20));
+        Map beans = new HashMap();
+        beans.put("employee", staff);
+        XLSTransformer transformer = new XLSTransformer();
+        try {
+            transformer.transformXLS("employees.xls", beans, "employees-out.xls");
+        } catch (Exception e) {
+            logger.error("XLS Transformation failed. Exception: " + e);
+        }
+
         return Response.ok(getOut(new byte[]{})).build();
     }
 

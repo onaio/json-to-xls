@@ -6,6 +6,7 @@ repositories {
 
 dependencies {
     compile group: 'com.yammer.dropwizard', name: 'dropwizard-core', version: '0.6.2'
+    compile group: 'net.sf.jxls', name: 'jxls-core', version: '1.0.2'
 }
 
 apply plugin: 'application'
