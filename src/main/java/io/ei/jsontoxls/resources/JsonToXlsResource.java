@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
@@ -41,12 +42,17 @@ public class JsonToXlsResource {
         beans.put("employee", staff);
         XLSTransformer transformer = new XLSTransformer();
         try {
-            transformer.transformXLS("employees.xls", beans, "employees-out.xls");
+            transformer.transformXLS("employees.xls", beans, "build/employees-out.xls");
+
+            FileInputStream stream = new FileInputStream("build/employees-out.xls");
+            byte[] excelBytes = new byte[stream.available()];
+            stream.read(excelBytes);
+
+            return Response.ok(getOut(excelBytes)).build();
         } catch (Exception e) {
             logger.error("XLS Transformation failed. Exception: " + e);
+            return Response.status(503).build();
         }
-
-        return Response.ok(getOut(new byte[]{})).build();
     }
 
     private StreamingOutput getOut(final byte[] excelBytes) {
