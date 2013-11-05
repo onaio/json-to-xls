@@ -1,7 +1,0 @@
-template: Hello, %s!
-defaultName: Anamika
-xlsTemplate: defaultTemplate.xls
-logging:
-  console:
-    enabled: true
-    threshold: ALL

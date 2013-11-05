@@ -15,5 +15,5 @@ apply plugin: 'application'
 mainClassName = 'io.ei.jsontoxls.JsonToXlsService'
 
 run {
-    args 'server', 'hello-world.yml'
+    args 'server', 'json-to-xls.yml'
 }

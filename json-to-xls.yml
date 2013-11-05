@@ -1,0 +1,5 @@
+xlsTemplate: NRHM-Monthly-Report-Format-Sub-Centers.xls
+logging:
+  console:
+    enabled: true
+    threshold: ALL
