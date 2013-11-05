@@ -3,6 +3,7 @@ package io.ei.jsontoxls;
 import com.yammer.dropwizard.Service;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
+import io.ei.jsontoxls.health.JsonToXLSHealthCheck;
 import io.ei.jsontoxls.resources.JsonToXlsResource;
 
 public class JsonToXlsService extends Service<JsonToXlsConfiguration> {
@@ -18,7 +19,8 @@ public class JsonToXlsService extends Service<JsonToXlsConfiguration> {
     @Override
     public void run(JsonToXlsConfiguration configuration, Environment environment) throws Exception {
         String xlsTemplate = configuration.getXlsTemplate();
-        environment.addResource(new JsonToXlsResource(xlsTemplate));
-//        environment.addHealthCheck(new TemplateHealthCheck(template));
+        JsonToXlsResource resource = new JsonToXlsResource(xlsTemplate);
+        environment.addResource(resource);
+        environment.addHealthCheck(new JsonToXLSHealthCheck(resource));
     }
 }
