@@ -8,6 +8,7 @@ dependencies {
     compile group: 'com.yammer.dropwizard', name: 'dropwizard-core', version: '0.6.2'
     compile group: 'net.sf.jxls', name: 'jxls-core', version: '1.0.2'
     compile group: 'com.google.code.gson', name: 'gson', version: '2.2.4'
+    compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
 }
 
 apply plugin: 'application'
