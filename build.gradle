@@ -1,6 +1,11 @@
 apply plugin: 'java'
 apply plugin: 'gradle-one-jar'
 apply plugin: 'application'
+apply plugin: 'maven'
+
+group = 'io.ei.jsontoxls'
+version = '1.0.4-SNAPSHOT'
+ext.packaging = 'jar'
 
 // Use Java 7 by default
 sourceCompatibility = '1.7'
@@ -49,4 +54,15 @@ run {
 
 artifacts {
     oneJar
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "http://nexus.motechproject.org/content/repositories/json-to-xls") {
+                authentication(userName: 'nexusUsername', password: 'nexusPassword')
+            }
+        }
+
+    }
 }
