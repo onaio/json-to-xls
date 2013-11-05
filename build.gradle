@@ -1,20 +1,52 @@
 apply plugin: 'java'
+apply plugin: 'gradle-one-jar'
+apply plugin: 'application'
+
+// Use Java 7 by default
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
+
+// UTF-8 should be standard by now. So use it!
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+// The main class of the application
+mainClassName = 'io.ei.jsontoxls.JsonToXlsService'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.github.rholder:gradle-one-jar:1.0.3'
+    }
+}
+
+project.ext {
+    dropwizardVersion = '0.6.2'
+    mainClassName = 'io.ei.jsontoxls.JsonToXlsService'
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile group: 'com.yammer.dropwizard', name: 'dropwizard-core', version: '0.6.2'
+    compile group: 'com.yammer.dropwizard', name: 'dropwizard-core', version: dropwizardVersion
     compile group: 'net.sf.jxls', name: 'jxls-core', version: '1.0.2'
     compile group: 'com.google.code.gson', name: 'gson', version: '2.2.4'
     compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
 }
 
-apply plugin: 'application'
 
-mainClassName = 'io.ei.jsontoxls.JsonToXlsService'
+task oneJar(type: OneJar) {
+    mainClass = mainClassName
+}
 
 run {
     args 'server', 'json-to-xls.yml'
+}
+
+artifacts {
+    oneJar
 }
