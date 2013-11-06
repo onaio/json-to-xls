@@ -4,7 +4,7 @@ apply plugin: 'application'
 apply plugin: 'maven'
 
 group = 'io.ei.jsontoxls'
-version = '0.1-SNAPSHOT'
+version = '0.2-SNAPSHOT'
 ext.packaging = 'jar'
 
 sourceCompatibility = '1.7'

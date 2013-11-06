@@ -7,3 +7,6 @@ env:
 
 before_script:
   - gradle oneJar
+
+after_success:
+  - gradle uploadArchives
