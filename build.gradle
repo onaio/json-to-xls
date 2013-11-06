@@ -53,15 +53,12 @@ artifacts {
     oneJar
 }
 
-ENV = System.getenv()
-USERNAME = ENV['NEXUS_USERNAME']
-PASSWORD = ENV['NEXUS_PASSWORD']
 
 uploadArchives {
     repositories {
         mavenDeployer {
             repository(url: "http://nexus.motechproject.org/content/repositories/json-to-xls") {
-                authentication(userName: "$USERNAME", password: "$PASSWORD")
+                authentication(userName: System.getenv('NEXUS_USERNAME'), password: System.getenv('NEXUS_PASSWORD'))
             }
         }
 
