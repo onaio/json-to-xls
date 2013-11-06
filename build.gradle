@@ -4,17 +4,14 @@ apply plugin: 'application'
 apply plugin: 'maven'
 
 group = 'io.ei.jsontoxls'
-version = '1.0.4-SNAPSHOT'
+version = '0.1-SNAPSHOT'
 ext.packaging = 'jar'
 
-// Use Java 7 by default
 sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
 
-// UTF-8 should be standard by now. So use it!
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-// The main class of the application
 mainClassName = 'io.ei.jsontoxls.JsonToXlsService'
 
 buildscript {
@@ -60,7 +57,7 @@ uploadArchives {
     repositories {
         mavenDeployer {
             repository(url: "http://nexus.motechproject.org/content/repositories/json-to-xls") {
-                authentication(userName: '$nexusUsername', password: '$nexusPassword')
+                authentication(userName: "$nexusUsername", password: "$nexusPassword")
             }
         }
 
