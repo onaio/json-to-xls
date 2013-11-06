@@ -60,7 +60,7 @@ uploadArchives {
     repositories {
         mavenDeployer {
             repository(url: "http://nexus.motechproject.org/content/repositories/json-to-xls") {
-                authentication(userName: 'nexusUsername', password: 'nexusPassword')
+                authentication(userName: '$nexusUsername', password: '$nexusPassword')
             }
         }
 
