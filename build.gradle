@@ -54,6 +54,7 @@ run {
 
 artifacts {
     oneJar
+    archives oneJar
 }
 
 
