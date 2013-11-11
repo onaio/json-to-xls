@@ -41,27 +41,19 @@ dependencies {
 }
 
 
-jar {
-
+task oneJar(type: OneJar) {
+    mainClass = mainClassName
     manifest {
-        attributes "Implementation-Title": "JSON-to-XLS"
-        attributes "Implementation-Version": version
-        attributes "Main-Class" : mainClassName
-    }
-
-    // remove the security files (from mail.jar / activation.jar) so that the jar will be executable.
-    doFirst {
-        from (configurations.runtime.resolve().collect { it.isDirectory() ? it : zipTree(it) }) {
-            exclude 'META-INF/MANIFEST.MF'
-            exclude 'META-INF/*.SF'
-            exclude 'META-INF/*.DSA'
-            exclude 'META-INF/*.RSA'
-        }
+        attributes("Implementation-Title": "JSON to XLS", "Implementation-Version": version)
     }
 }
 
 run {
     args 'server', 'json-to-xls.yml'
+}
+
+artifacts {
+    oneJar
 }
 
 
