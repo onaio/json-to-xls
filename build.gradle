@@ -44,7 +44,7 @@ dependencies {
 task oneJar(type: OneJar) {
     mainClass = mainClassName
     manifest {
-        attributes("Implementation-Title": "JSON to XLS", "Implementation-Version": version)
+        attributes("Implementation-Title": "JSON to XLS", "Implementation-Version": version, "Main-Class": mainClassName)
     }
 }
 
