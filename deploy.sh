@@ -3,7 +3,7 @@
 [[ -z "$1" ]] && echo "Usage: $0 version-of-json-to-xls-delivery-to-deploy" >&2 && exit 1
 
 VERSION=$1
-FILENAME="json-to-xls-${VERSION}.jar"
+FILENAME="json-to-xls-${VERSION}-standalone.jar"
 echo "FETCHING FILE: ${FILENAME}"
 ssh prod '\
     export time=`date +%F_%T`; \
