@@ -10,5 +10,4 @@ ssh prod '\
     mkdir -p old/backup-json-to-xls.${time} && \
     ([[ `ls | grep -q "json-to-xls.*"; echo $?` = 0 ]] && /bin/mv -f json-to-xls* old/backup-json-to-xls.${time} || true) && \
     wget http://nexus.motechproject.org/content/repositories/json-to-xls/io/ei/jsontoxls/json-to-xls/0.2-SNAPSHOT/'${FILENAME}' && \
-    unzip -d json-to-xls '${FILENAME}' && \
-    java -Ddw.http.port=9090 -jar '${FILENAME}' server json-to-xls/json-to-xls.yml'
+    java -Ddw.http.port=9090 -jar '${FILENAME}' server config-json-to-xls.yml'
