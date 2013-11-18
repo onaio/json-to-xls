@@ -1,7 +1,5 @@
 package io.ei.jsontoxls.resources;
 
-import com.google.gson.Gson;
-import io.ei.jsontoxls.core.Data;
 import net.sf.jxls.transformer.XLSTransformer;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
@@ -35,9 +33,14 @@ public class JsonToXlsResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response generateExcelFromTemplate(String data) {
         logger.debug("Got request with JSON: " + data);
+        String className = "Data";
+        String packageName = "io.ei.jsontoxls.core";
+        String outputDirectory = "output";
+        JsonPojoConverter converter = new JsonPojoConverter(packageName, className, outputDirectory, logger);
         try {
-            Map beans = new HashMap();
-            beans.put("data", new Gson().fromJson(data, Data.class));
+            String generatedPackageName = converter.generateJavaClasses(data);
+            Map<String, Object> beans = new HashMap<>();
+            beans.put(className.toLowerCase(), converter.makeJsonObject(generatedPackageName, data));
             FileInputStream inputStream = new FileInputStream(excelTemplate);
             XLSTransformer transformer = new XLSTransformer();
             Workbook workbook = transformer.transformXLS(inputStream, beans);
@@ -48,6 +51,9 @@ public class JsonToXlsResource {
             logger.error(MessageFormat.format("XLS Transformation failed. Exception Message: {0}. Stack trace: {1}", e.getMessage(),
                     getFullStackTrace(e)));
             return Response.status(503).build();
+        }
+        finally {
+            converter.cleanup(packageName);
         }
     }
 
