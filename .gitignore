@@ -13,3 +13,5 @@ logfile
 build/
 classes/
 output/
+.class
+out/
