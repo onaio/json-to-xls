@@ -1,5 +1,6 @@
 package io.ei.jsontoxls.resources;
 
+import io.ei.jsontoxls.util.PackageUtils;
 import net.sf.jxls.transformer.XLSTransformer;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ import static org.apache.commons.lang.exception.ExceptionUtils.getFullStackTrace
 @Path("/xls")
 @Produces({"application/ms-excel"})
 public class JsonToXlsResource {
-    Logger logger = LoggerFactory.getLogger(JsonToXlsResource.class);
+    private Logger logger = LoggerFactory.getLogger(JsonToXlsResource.class);
     private final String excelTemplate;
 
     public JsonToXlsResource(String excelTemplate) {
@@ -33,14 +34,16 @@ public class JsonToXlsResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response generateExcelFromTemplate(String data) {
         logger.debug("Got request with JSON: " + data);
-        String className = "Data";
-        String packageName = "io.ei.jsontoxls.core";
+        String packageName = "io.ei.jsontoxls.domain";
         String outputDirectory = "output";
-        JsonPojoConverter converter = new JsonPojoConverter(packageName, className, outputDirectory, logger);
+        String generatedPackageName = "";
+        String className = "Data";
+        JsonPojoConverter converter = new JsonPojoConverter(packageName, className, outputDirectory);
+        ObjectDeserializer objectDeserializer = new ObjectDeserializer(outputDirectory, className);
         try {
-            String generatedPackageName = converter.generateJavaClasses(data);
+            generatedPackageName = converter.generateJavaClasses(data);
             Map<String, Object> beans = new HashMap<>();
-            beans.put(className.toLowerCase(), converter.makeJsonObject(generatedPackageName, data));
+            beans.put("data", objectDeserializer.makeJsonObject(generatedPackageName, data));
             FileInputStream inputStream = new FileInputStream(excelTemplate);
             XLSTransformer transformer = new XLSTransformer();
             Workbook workbook = transformer.transformXLS(inputStream, beans);
@@ -51,9 +54,8 @@ public class JsonToXlsResource {
             logger.error(MessageFormat.format("XLS Transformation failed. Exception Message: {0}. Stack trace: {1}", e.getMessage(),
                     getFullStackTrace(e)));
             return Response.status(503).build();
-        }
-        finally {
-            converter.cleanup(packageName);
+        } finally {
+            new PackageUtils(outputDirectory).cleanup(generatedPackageName);
         }
     }
 
