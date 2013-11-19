@@ -12,3 +12,4 @@ logfile
 .gradle
 build/
 classes/
+output/
