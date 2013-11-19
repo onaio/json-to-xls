@@ -21,6 +21,7 @@ public class PackageUtils {
         File packageDirectory = new File(this.outputDirectory + "/" + packageName.replace(".", "/"));
         try {
             if (packageDirectory.exists()) {
+                logger.info(MessageFormat.format("Attempting to delete directory: {0}", packageDirectory.getPath()));
                 FileUtils.forceDelete(packageDirectory);
             }
         } catch (IOException e) {

@@ -24,9 +24,15 @@ import static org.apache.commons.lang.exception.ExceptionUtils.getFullStackTrace
 @Produces({"application/ms-excel"})
 public class JsonToXlsResource {
     private Logger logger = LoggerFactory.getLogger(JsonToXlsResource.class);
-    private final String excelTemplate;
+    private JsonPojoConverter converter;
+    private ObjectDeserializer objectDeserializer;
+    private PackageUtils packageUtil;
+    private String excelTemplate;
 
-    public JsonToXlsResource(String excelTemplate) {
+    public JsonToXlsResource(JsonPojoConverter converter, ObjectDeserializer objectDeserializer, PackageUtils packageUtil, String excelTemplate) {
+        this.converter = converter;
+        this.objectDeserializer = objectDeserializer;
+        this.packageUtil = packageUtil;
         this.excelTemplate = excelTemplate;
     }
 
@@ -34,12 +40,8 @@ public class JsonToXlsResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response generateExcelFromTemplate(String data) {
         logger.debug("Got request with JSON: " + data);
-        String packageName = "io.ei.jsontoxls.domain";
-        String outputDirectory = "output";
+        Response response = Response.status(503).build();
         String generatedPackageName = "";
-        String className = "Data";
-        JsonPojoConverter converter = new JsonPojoConverter(packageName, className, outputDirectory);
-        ObjectDeserializer objectDeserializer = new ObjectDeserializer(outputDirectory, className);
         try {
             generatedPackageName = converter.generateJavaClasses(data);
             Map<String, Object> beans = new HashMap<>();
@@ -49,13 +51,13 @@ public class JsonToXlsResource {
             Workbook workbook = transformer.transformXLS(inputStream, beans);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             workbook.write(outputStream);
-            return Response.ok(getOut(outputStream.toByteArray())).build();
+            response = Response.ok(getOut(outputStream.toByteArray())).build();
         } catch (Exception e) {
             logger.error(MessageFormat.format("XLS Transformation failed. Exception Message: {0}. Stack trace: {1}", e.getMessage(),
                     getFullStackTrace(e)));
-            return Response.status(503).build();
         } finally {
-            new PackageUtils(outputDirectory).cleanup(generatedPackageName);
+            packageUtil.cleanup(generatedPackageName);
+            return response;
         }
     }
 
