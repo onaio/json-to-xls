@@ -31,6 +31,9 @@ project.ext {
 
 repositories {
     mavenCentral()
+    maven {
+        url "http://repository.codehaus.org/org/codehaus"
+    }
 }
 
 dependencies {
