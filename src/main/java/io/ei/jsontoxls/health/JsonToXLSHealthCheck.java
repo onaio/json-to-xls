@@ -1,14 +1,14 @@
 package io.ei.jsontoxls.health;
 
 import com.yammer.metrics.core.HealthCheck;
-import io.ei.jsontoxls.resources.JsonToXlsResource;
+import io.ei.jsontoxls.resources.XlsResource;
 
 import javax.ws.rs.core.Response;
 
 public class JsonToXLSHealthCheck extends HealthCheck {
-    private JsonToXlsResource resource;
+    private XlsResource resource;
 
-    public JsonToXLSHealthCheck(JsonToXlsResource resource) {
+    public JsonToXLSHealthCheck(XlsResource resource) {
         super("JSON to XLS conversion");
         this.resource = resource;
     }

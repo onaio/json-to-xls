@@ -1,4 +1,4 @@
-package io.ei.jsontoxls.resources;
+package io.ei.jsontoxls.util;
 
 import com.google.gson.Gson;
 

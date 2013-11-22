@@ -17,7 +17,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class JsonToXlsResourceTest {
 
-    private JsonToXlsResource jsonToXlsResource;
+    private XlsResource xlsResource;
 
     @Mock
     private ObjectDeserializer objectDeserializer;
@@ -34,7 +34,7 @@ public class JsonToXlsResourceTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        jsonToXlsResource = new JsonToXlsResource(converter, objectDeserializer, packageUtil, excelUtil, excelTemplate);
+        xlsResource = new XlsResource(converter, objectDeserializer, packageUtil, excelUtil, excelTemplate);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class JsonToXlsResourceTest {
         when(objectDeserializer.makeJsonObject("generated-package-name", dataJson)).thenReturn(object);
         when(excelUtil.generateExcelWorkbook(new HashMap<String, Object>(), excelTemplate)).thenReturn(streamingOutput);
 
-        Response response = jsonToXlsResource.generateExcelFromTemplate(dataJson);
+        Response response = xlsResource.generateExcelFromTemplate(dataJson);
 
         assertEquals(response.getStatus(), Response.ok().build().getStatus());
         verify(packageUtil).cleanup("generated-package-name");

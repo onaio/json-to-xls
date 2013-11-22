@@ -1,4 +1,4 @@
-package io.ei.jsontoxls.resources;
+package io.ei.jsontoxls.util;
 
 import java.net.URL;
 import java.net.URLClassLoader;

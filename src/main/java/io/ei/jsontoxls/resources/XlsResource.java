@@ -1,6 +1,8 @@
 package io.ei.jsontoxls.resources;
 
 import io.ei.jsontoxls.util.ExcelUtils;
+import io.ei.jsontoxls.util.JsonPojoConverter;
+import io.ei.jsontoxls.util.ObjectDeserializer;
 import io.ei.jsontoxls.util.PackageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,15 +21,15 @@ import static org.apache.commons.lang.exception.ExceptionUtils.getFullStackTrace
 
 @Path("/xls")
 @Produces({"application/ms-excel"})
-public class JsonToXlsResource {
+public class XlsResource {
     private ExcelUtils excelUtil;
-    private Logger logger = LoggerFactory.getLogger(JsonToXlsResource.class);
+    private Logger logger = LoggerFactory.getLogger(XlsResource.class);
     private JsonPojoConverter converter;
     private ObjectDeserializer objectDeserializer;
     private PackageUtils packageUtil;
     private String excelTemplate;
 
-    public JsonToXlsResource(JsonPojoConverter converter, ObjectDeserializer objectDeserializer, PackageUtils packageUtil, ExcelUtils excelUtil, String excelTemplate) {
+    public XlsResource(JsonPojoConverter converter, ObjectDeserializer objectDeserializer, PackageUtils packageUtil, ExcelUtils excelUtil, String excelTemplate) {
         this.converter = converter;
         this.objectDeserializer = objectDeserializer;
         this.packageUtil = packageUtil;

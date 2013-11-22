@@ -1,4 +1,4 @@
-package io.ei.jsontoxls.resources;
+package io.ei.jsontoxls.util;
 
 import com.astav.jsontojava.Generator;
 import org.slf4j.Logger;
