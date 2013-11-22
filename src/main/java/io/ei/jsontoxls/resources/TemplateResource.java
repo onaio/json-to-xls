@@ -10,9 +10,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.text.MessageFormat;
 import java.util.UUID;
 
+import static java.text.MessageFormat.format;
 import static org.apache.commons.lang.exception.ExceptionUtils.getFullStackTrace;
 
 @Path("/templates")
@@ -29,12 +29,12 @@ public class TemplateResource {
     @Produces(MediaType.TEXT_PLAIN)
     public Response save(byte[] templateData) {
         try {
-            logger.info("Got template with " + templateData.length + " number of bytes.");
             String token = UUID.randomUUID().toString();
             templateRepository.add(token, templateData);
+            logger.info(format("Saved template with {0} number of bytes. Token: {1}", templateData.length, token));
             return Response.ok(token, MediaType.TEXT_PLAIN).build();
         } catch (Exception e) {
-            logger.error(MessageFormat.format("Unable to save template. Exception Message: {0}. Stack trace: {1}", e.getMessage(),
+            logger.error(format("Unable to save template. Exception Message: {0}. Stack trace: {1}", e.getMessage(),
                     getFullStackTrace(e)));
             return Response.status(503).build();
         }

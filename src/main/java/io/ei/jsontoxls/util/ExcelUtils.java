@@ -6,18 +6,18 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 
 public class ExcelUtils {
 
-    public StreamingOutput generateExcelWorkbook(Map<String, Object> beans, String excelTemplate) throws InvalidFormatException, IOException {
-        FileInputStream inputStream = new FileInputStream(excelTemplate);
+    public StreamingOutput generateExcelWorkbook(Map<String, Object> beans,
+                                                 byte[] template) throws InvalidFormatException, IOException {
         XLSTransformer transformer = new XLSTransformer();
-        Workbook workbook = transformer.transformXLS(inputStream, beans);
+        Workbook workbook = transformer.transformXLS(new ByteArrayInputStream(template), beans);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         workbook.write(outputStream);
         return getExcelAsOutputStream(outputStream.toByteArray());

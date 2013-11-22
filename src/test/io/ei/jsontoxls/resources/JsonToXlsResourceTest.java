@@ -1,6 +1,9 @@
 package io.ei.jsontoxls.resources;
 
+import io.ei.jsontoxls.repository.TemplateRepository;
 import io.ei.jsontoxls.util.ExcelUtils;
+import io.ei.jsontoxls.util.JsonPojoConverter;
+import io.ei.jsontoxls.util.ObjectDeserializer;
 import io.ei.jsontoxls.util.PackageUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,12 +32,15 @@ public class JsonToXlsResourceTest {
     private ExcelUtils excelUtil;
     @Mock
     private StreamingOutput streamingOutput;
+    @Mock
+    private TemplateRepository templateRepository;
     private String excelTemplate = "excel-template-name";
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        xlsResource = new XlsResource(converter, objectDeserializer, packageUtil, excelUtil, excelTemplate);
+        xlsResource = new XlsResource(converter, objectDeserializer, packageUtil, excelUtil, excelTemplate,
+                templateRepository);
     }
 
     @Test
@@ -51,12 +57,15 @@ public class JsonToXlsResourceTest {
                 "    }\n" +
                 "}";
         Object object = new Object();
+        byte[] template = new byte[]{};
+        when(templateRepository.findByToken("token")).thenReturn(template);
 
         when(converter.generateJavaClasses(dataJson)).thenReturn("generated-package-name");
         when(objectDeserializer.makeJsonObject("generated-package-name", dataJson)).thenReturn(object);
-        when(excelUtil.generateExcelWorkbook(new HashMap<String, Object>(), excelTemplate)).thenReturn(streamingOutput);
+        when(excelUtil.generateExcelWorkbook(new HashMap<String, Object>(), template))
+                .thenReturn(streamingOutput);
 
-        Response response = xlsResource.generateExcelFromTemplate(dataJson);
+        Response response = xlsResource.generateExcelFromTemplate("token", dataJson);
 
         assertEquals(response.getStatus(), Response.ok().build().getStatus());
         verify(packageUtil).cleanup("generated-package-name");
