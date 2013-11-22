@@ -7,6 +7,7 @@ import io.ei.jsontoxls.health.JsonToXLSHealthCheck;
 import io.ei.jsontoxls.resources.JsonPojoConverter;
 import io.ei.jsontoxls.resources.JsonToXlsResource;
 import io.ei.jsontoxls.resources.ObjectDeserializer;
+import io.ei.jsontoxls.resources.TemplateResource;
 import io.ei.jsontoxls.util.ExcelUtils;
 import io.ei.jsontoxls.util.PackageUtils;
 
@@ -33,5 +34,6 @@ public class JsonToXlsService extends Service<JsonToXlsConfiguration> {
         JsonToXlsResource resource = new JsonToXlsResource(converter, objectDeserializer, packageUtil, excelUtil, xlsTemplate);
         environment.addResource(resource);
         environment.addHealthCheck(new JsonToXLSHealthCheck(resource));
+        environment.addResource(new TemplateResource());
     }
 }
