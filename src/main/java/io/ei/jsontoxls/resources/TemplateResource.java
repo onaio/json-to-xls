@@ -1,38 +1,42 @@
 package io.ei.jsontoxls.resources;
 
+import io.ei.jsontoxls.repository.TemplateRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.text.MessageFormat;
+import java.util.UUID;
+
+import static org.apache.commons.lang.exception.ExceptionUtils.getFullStackTrace;
 
 @Path("/templates")
 public class TemplateResource {
     Logger logger = LoggerFactory.getLogger(TemplateResource.class);
+    private TemplateRepository templateRepository;
+
+    public TemplateResource(TemplateRepository templateRepository) {
+        this.templateRepository = templateRepository;
+    }
 
     @POST
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    @Produces({"application/octet-stream"})
+    @Produces(MediaType.TEXT_PLAIN)
     public Response save(byte[] templateData) {
         try {
             logger.info("Got template with " + templateData.length + " number of bytes.");
-            return Response.ok(getOut(templateData), MediaType.APPLICATION_OCTET_STREAM).build();
+            String token = UUID.randomUUID().toString();
+            templateRepository.add(token, templateData);
+            return Response.ok(token, MediaType.TEXT_PLAIN).build();
         } catch (Exception e) {
-            logger.error("Unable to save template. Exception: " + e.getStackTrace());
+            logger.error(MessageFormat.format("Unable to save template. Exception Message: {0}. Stack trace: {1}", e.getMessage(),
+                    getFullStackTrace(e)));
             return Response.status(503).build();
         }
-    }
-
-    private StreamingOutput getOut(final byte[] excelBytes) {
-        return new StreamingOutput() {
-            @Override
-            public void write(OutputStream out) throws IOException, WebApplicationException {
-                out.write(excelBytes);
-            }
-        };
     }
 }
