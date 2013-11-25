@@ -39,7 +39,7 @@ public class JsonToXlsResourceTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        xlsResource = new XlsResource(converter, objectDeserializer, packageUtil, excelUtil, excelTemplate,
+        xlsResource = new XlsResource(converter, objectDeserializer, packageUtil, excelUtil,
                 templateRepository);
     }
 

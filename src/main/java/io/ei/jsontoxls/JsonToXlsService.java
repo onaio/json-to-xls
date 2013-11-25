@@ -26,7 +26,6 @@ public class JsonToXlsService extends Service<JsonToXlsConfiguration> {
 
     @Override
     public void run(JsonToXlsConfiguration configuration, Environment environment) throws Exception {
-        String xlsTemplate = configuration.getXlsTemplate();
         String packageName = "io.ei.jsontoxls.domain";
         String outputDirectory = "output";
         String className = "Data";
@@ -37,7 +36,7 @@ public class JsonToXlsService extends Service<JsonToXlsConfiguration> {
         DBIFactory factory = new DBIFactory();
         DBI dbInterface = factory.build(environment, configuration.getDatabaseConfiguration(), "json_to_xls");
         TemplateRepository templateRepository = dbInterface.onDemand(TemplateRepository.class);
-        XlsResource resource = new XlsResource(converter, objectDeserializer, packageUtil, excelUtil, xlsTemplate,
+        XlsResource resource = new XlsResource(converter, objectDeserializer, packageUtil, excelUtil,
                 templateRepository);
         environment.addResource(resource);
         environment.addHealthCheck(new JsonToXLSHealthCheck(resource));

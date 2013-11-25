@@ -18,8 +18,6 @@ database:
   # the maximum lifetime of an idle connection
   closeConnectionIfIdleFor: 1 minute
 
-xlsTemplate: NRHM-Monthly-Report-Format-Sub-Centers.xls
-
 logging:
   console:
     enabled: true

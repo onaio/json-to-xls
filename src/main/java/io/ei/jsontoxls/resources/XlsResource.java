@@ -25,16 +25,14 @@ public class XlsResource {
     private JsonPojoConverter converter;
     private ObjectDeserializer objectDeserializer;
     private PackageUtils packageUtil;
-    private String excelTemplate;
     private TemplateRepository templateRepository;
 
     public XlsResource(JsonPojoConverter converter, ObjectDeserializer objectDeserializer, PackageUtils packageUtil,
-                       ExcelUtils excelUtil, String excelTemplate, TemplateRepository templateRepository) {
+                       ExcelUtils excelUtil, TemplateRepository templateRepository) {
         this.converter = converter;
         this.objectDeserializer = objectDeserializer;
         this.packageUtil = packageUtil;
         this.excelUtil = excelUtil;
-        this.excelTemplate = excelTemplate;
         this.templateRepository = templateRepository;
     }
 
