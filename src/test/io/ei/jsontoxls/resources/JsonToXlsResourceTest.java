@@ -14,8 +14,7 @@ import javax.ws.rs.core.StreamingOutput;
 import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class JsonToXlsResourceTest {
@@ -44,7 +43,7 @@ public class JsonToXlsResourceTest {
     }
 
     @Test
-    public void shouldGenerateXLSFromTemplate() throws Exception {
+    public void shouldGenerateXLSUsingTokenAndJSONData() throws Exception {
         String dataJson = "{\n" +
                 "    \"loc\": {\n" +
                 "        \"state\": \"Karnataka\",\n" +
@@ -56,12 +55,10 @@ public class JsonToXlsResourceTest {
                 "        \"anc_jsy\": \"3\"\n" +
                 "    }\n" +
                 "}";
-        Object object = new Object();
         byte[] template = new byte[]{};
         when(templateRepository.findByToken("token")).thenReturn(template);
-
         when(converter.generateJavaClasses(dataJson)).thenReturn("generated-package-name");
-        when(objectDeserializer.makeJsonObject("generated-package-name", dataJson)).thenReturn(object);
+        when(objectDeserializer.makeJsonObject("generated-package-name", dataJson)).thenReturn(new Object());
         when(excelUtil.generateExcelWorkbook(new HashMap<String, Object>(), template))
                 .thenReturn(streamingOutput);
 
@@ -69,6 +66,29 @@ public class JsonToXlsResourceTest {
 
         assertEquals(response.getStatus(), Response.ok().build().getStatus());
         verify(packageUtil).cleanup("generated-package-name");
+    }
+
+    @Test
+    public void shouldReturnErrorWhenNoTemplateExistsForGivenToken() throws Exception {
+        String dataJson = "{\n" +
+                "    \"loc\": {\n" +
+                "        \"state\": \"Karnataka\",\n" +
+                "        \"district\": \"Mysore\"\n" +
+                "    },\n" +
+                "    \"ind\": {\n" +
+                "        \"anc\": \"1\",\n" +
+                "        \"anc_12\": \"2\",\n" +
+                "        \"anc_jsy\": \"3\"\n" +
+                "    }\n" +
+                "}";
+        when(templateRepository.findByToken("token")).thenReturn(null);
+
+        Response response = xlsResource.generateExcelFromTemplate("token", dataJson);
+
+        assertEquals(response.getStatus(), Response.status(404).entity("Could not find a valid template for the given token. Token: {0}").build().getStatus());
+        verifyZeroInteractions(excelUtil);
+        verifyZeroInteractions(converter);
+        verifyZeroInteractions(objectDeserializer);
     }
 }
 
