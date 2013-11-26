@@ -2,6 +2,7 @@ package io.ei.jsontoxls.resources;
 
 import io.ei.jsontoxls.Messages;
 import io.ei.jsontoxls.repository.TemplateRepository;
+import io.ei.jsontoxls.util.ExcelUtils;
 import io.ei.jsontoxls.util.ResponseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +22,11 @@ import static org.apache.commons.lang.exception.ExceptionUtils.getFullStackTrace
 public class TemplateResource {
     Logger logger = LoggerFactory.getLogger(TemplateResource.class);
     private TemplateRepository templateRepository;
+    private ExcelUtils excelUtils;
 
-    public TemplateResource(TemplateRepository templateRepository) {
+    public TemplateResource(TemplateRepository templateRepository, ExcelUtils excelUtils) {
         this.templateRepository = templateRepository;
+        this.excelUtils = excelUtils;
     }
 
     @POST
@@ -31,8 +34,8 @@ public class TemplateResource {
     @Produces(MediaType.TEXT_PLAIN)
     public Response save(byte[] templateData) {
         try {
-            if (templateData == null || templateData.length == 0) {
-                return ResponseFactory.badRequest(Messages.EMPTY_TEMPLATE);
+            if (!excelUtils.isExcel(templateData)) {
+                return ResponseFactory.badRequest(Messages.INVALID_TEMPLATE);
             }
 
             String token = UUID.randomUUID().toString();
@@ -45,4 +48,5 @@ public class TemplateResource {
             return ResponseFactory.internalServerError(Messages.UNABLE_TO_SAVE_TEMPLATE);
         }
     }
+
 }

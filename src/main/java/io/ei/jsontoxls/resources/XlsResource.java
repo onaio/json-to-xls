@@ -46,12 +46,12 @@ public class XlsResource {
         logger.debug(format("Got request with Token: {0} and JSON: {1}", token, jsonData));
         String generatedPackageName = "";
         try {
-            if (isBlank(jsonData)) {
-                return badRequest(format(Messages.EMPTY_JSON_DATA, token));
-            }
             byte[] template = templateRepository.findByToken(token);
             if (template == null) {
-                return notFound(format(Messages.NO_TEMPLATE_FOR_GIVEN_TOKEN, token));
+                return notFound(format(Messages.INVALID_TOKEN, token));
+            }
+            if (isBlank(jsonData)) {
+                return badRequest(format(Messages.EMPTY_JSON_DATA, token));
             }
             generatedPackageName = converter.generateJavaClasses(jsonData);
             Map<String, Object> beans = new HashMap<>();

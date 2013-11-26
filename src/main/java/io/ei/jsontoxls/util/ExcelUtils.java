@@ -3,6 +3,7 @@ package io.ei.jsontoxls.util;
 import net.sf.jxls.transformer.XLSTransformer;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
@@ -13,6 +14,15 @@ import java.io.OutputStream;
 import java.util.Map;
 
 public class ExcelUtils {
+
+    public boolean isExcel(byte[] templateData) {
+        try {
+            WorkbookFactory.create(new ByteArrayInputStream(templateData));
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
 
     public StreamingOutput generateExcelWorkbook(Map<String, Object> beans,
                                                  byte[] template) throws InvalidFormatException, IOException {

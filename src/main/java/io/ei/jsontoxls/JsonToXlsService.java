@@ -32,15 +32,15 @@ public class JsonToXlsService extends Service<JsonToXlsConfiguration> {
         JsonPojoConverter converter = new JsonPojoConverter(packageName, className, outputDirectory);
         ObjectDeserializer objectDeserializer = new ObjectDeserializer(outputDirectory, className);
         PackageUtils packageUtil = new PackageUtils(outputDirectory);
-        ExcelUtils excelUtil = new ExcelUtils();
+        ExcelUtils excelUtils = new ExcelUtils();
         DBIFactory factory = new DBIFactory();
         DBI dbInterface = factory.build(environment, configuration.getDatabaseConfiguration(), "json_to_xls");
         TemplateRepository templateRepository = dbInterface.onDemand(TemplateRepository.class);
-        XlsResource resource = new XlsResource(converter, objectDeserializer, packageUtil, excelUtil,
+        XlsResource resource = new XlsResource(converter, objectDeserializer, packageUtil, excelUtils,
                 templateRepository);
         environment.addResource(resource);
         environment.addHealthCheck(new JsonToXLSHealthCheck(resource));
 
-        environment.addResource(new TemplateResource(templateRepository));
+        environment.addResource(new TemplateResource(templateRepository, excelUtils));
     }
 }
