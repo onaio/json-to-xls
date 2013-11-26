@@ -15,7 +15,9 @@ import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 
+import static io.ei.jsontoxls.util.ResponseFactory.*;
 import static java.text.MessageFormat.format;
+import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.exception.ExceptionUtils.getFullStackTrace;
 
 @Path("/xls/{token}")
@@ -40,13 +42,15 @@ public class XlsResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response generateExcelFromTemplate(@PathParam("token") String token, String data) {
-        logger.debug("Got request with JSON: " + data);
+        logger.debug(format("Got request with Token: {0} and JSON: {1}", token, data));
         String generatedPackageName = "";
         try {
+            if (isBlank(data)) {
+                return badRequest(format(Messages.EMPTY_JSON_DATA, token));
+            }
             byte[] template = templateRepository.findByToken(token);
             if (template == null) {
-                logger.error(format(Messages.NO_TEMPLATE_FOR_GIVEN_TOKEN, token));
-                return Response.status(404).entity(Messages.NO_TEMPLATE_FOR_GIVEN_TOKEN).build();
+                return notFound(format(Messages.NO_TEMPLATE_FOR_GIVEN_TOKEN, token));
             }
             generatedPackageName = converter.generateJavaClasses(data);
             Map<String, Object> beans = new HashMap<>();
@@ -55,9 +59,10 @@ public class XlsResource {
         } catch (Exception e) {
             logger.error(format(Messages.TRANSFORMATION_FAILURE, e.getMessage(),
                     getFullStackTrace(e)));
+            return internalServerError(Messages.UNABLE_TO_GENERATE_EXCEL_ERROR);
         } finally {
             packageUtil.cleanup(generatedPackageName);
         }
-        return Response.status(500).build();
     }
+
 }

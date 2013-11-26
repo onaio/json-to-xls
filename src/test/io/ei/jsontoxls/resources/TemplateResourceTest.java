@@ -10,8 +10,7 @@ import javax.ws.rs.core.Response;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class TemplateResourceTest {
@@ -42,7 +41,18 @@ public class TemplateResourceTest {
         Response response = resource.save(templateData);
 
         assertEquals(400, response.getStatus());
-        assertEquals("Empty template", response.getEntity());
+        assertEquals("Template cannot be empty.", response.getEntity());
         verifyZeroInteractions(repository);
+    }
+
+    @Test
+    public void shouldReturnInternalServerErrorWhenThereIsAnException() throws Exception {
+        byte[] templateData = new byte[]{1};
+        doThrow(new RuntimeException()).when(repository).add(anyString(), eq(templateData));
+
+        Response response = resource.save(templateData);
+
+        assertEquals(500, response.getStatus());
+        assertEquals("Unable to save template due to internal error.", response.getEntity());
     }
 }

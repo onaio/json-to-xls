@@ -2,6 +2,7 @@ package io.ei.jsontoxls.resources;
 
 import io.ei.jsontoxls.Messages;
 import io.ei.jsontoxls.repository.TemplateRepository;
+import io.ei.jsontoxls.util.ResponseFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,11 +32,7 @@ public class TemplateResource {
     public Response save(byte[] templateData) {
         try {
             if (templateData == null || templateData.length == 0) {
-                return Response
-                        .status(Response.Status.BAD_REQUEST)
-                        .entity(Messages.EMPTY_TEMPLATE)
-                        .type(MediaType.TEXT_PLAIN)
-                        .build();
+                return ResponseFactory.badRequest(Messages.EMPTY_TEMPLATE);
             }
 
             String token = UUID.randomUUID().toString();
@@ -43,13 +40,9 @@ public class TemplateResource {
             logger.info(format("Saved template with {0} number of bytes. Token: {1}", templateData.length, token));
             return Response.status(Response.Status.CREATED).entity(token).type(MediaType.TEXT_PLAIN).build();
         } catch (Exception e) {
-            logger.error(format(Messages.UNABLE_TO_SAVE_TEMPLATE, e.getMessage(),
+            logger.error(format("Unable to save template. Exception Message: {0}. Stack trace: {1}.", e.getMessage(),
                     getFullStackTrace(e)));
-            return Response
-                    .status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(format(Messages.UNABLE_TO_SAVE_TEMPLATE, e.getMessage(),
-                            getFullStackTrace(e)))
-                    .build();
+            return ResponseFactory.internalServerError(Messages.UNABLE_TO_SAVE_TEMPLATE);
         }
     }
 }

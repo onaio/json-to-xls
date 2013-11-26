@@ -17,7 +17,7 @@ import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class JsonToXlsResourceTest {
+public class XlsResourceTest {
 
     private XlsResource xlsResource;
 
@@ -33,7 +33,6 @@ public class JsonToXlsResourceTest {
     private StreamingOutput streamingOutput;
     @Mock
     private TemplateRepository templateRepository;
-    private String excelTemplate = "excel-template-name";
 
     @Before
     public void setUp() throws Exception {
@@ -64,7 +63,7 @@ public class JsonToXlsResourceTest {
 
         Response response = xlsResource.generateExcelFromTemplate("token", dataJson);
 
-        assertEquals(response.getStatus(), Response.ok().build().getStatus());
+        assertEquals(response.getStatus(), 200);
         verify(packageUtil).cleanup("generated-package-name");
     }
 
@@ -85,7 +84,20 @@ public class JsonToXlsResourceTest {
 
         Response response = xlsResource.generateExcelFromTemplate("token", dataJson);
 
-        assertEquals(response.getStatus(), Response.status(404).entity("Could not find a valid template for the given token. Token: {0}").build().getStatus());
+        assertEquals(response.getStatus(), 404);
+        assertEquals(response.getEntity(), "Could not find a valid template for the given token. Token: token.");
+        verifyZeroInteractions(excelUtil);
+        verifyZeroInteractions(converter);
+        verifyZeroInteractions(objectDeserializer);
+    }
+
+    @Test
+    public void shouldReturnErrorWhenEmptyJSONIsPosted() throws Exception {
+        Response response = xlsResource.generateExcelFromTemplate("token", "");
+
+        assertEquals(response.getStatus(), 400);
+        assertEquals(response.getEntity(), "JSON data cannot be empty.");
+        verifyZeroInteractions(templateRepository);
         verifyZeroInteractions(excelUtil);
         verifyZeroInteractions(converter);
         verifyZeroInteractions(objectDeserializer);
