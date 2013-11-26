@@ -6,6 +6,7 @@ import io.ei.jsontoxls.util.ExcelUtils;
 import io.ei.jsontoxls.util.JsonPojoConverter;
 import io.ei.jsontoxls.util.ObjectDeserializer;
 import io.ei.jsontoxls.util.PackageUtils;
+import org.codehaus.jackson.JsonParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,21 +42,25 @@ public class XlsResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response generateExcelFromTemplate(@PathParam("token") String token, String data) {
-        logger.debug(format("Got request with Token: {0} and JSON: {1}", token, data));
+    public Response generateExcelFromTemplate(@PathParam("token") String token, String jsonData) {
+        logger.debug(format("Got request with Token: {0} and JSON: {1}", token, jsonData));
         String generatedPackageName = "";
         try {
-            if (isBlank(data)) {
+            if (isBlank(jsonData)) {
                 return badRequest(format(Messages.EMPTY_JSON_DATA, token));
             }
             byte[] template = templateRepository.findByToken(token);
             if (template == null) {
                 return notFound(format(Messages.NO_TEMPLATE_FOR_GIVEN_TOKEN, token));
             }
-            generatedPackageName = converter.generateJavaClasses(data);
+            generatedPackageName = converter.generateJavaClasses(jsonData);
             Map<String, Object> beans = new HashMap<>();
-            beans.put("data", objectDeserializer.makeJsonObject(generatedPackageName, data));
+            beans.put("data", objectDeserializer.makeJsonObject(generatedPackageName, jsonData));
             return Response.ok(excelUtil.generateExcelWorkbook(beans, template)).build();
+        } catch (JsonParseException e) {
+            logger.error(format(Messages.MALFORMED_JSON, e.getMessage(),
+                    getFullStackTrace(e)));
+            return badRequest(Messages.MALFORMED_JSON);
         } catch (Exception e) {
             logger.error(format(Messages.TRANSFORMATION_FAILURE, e.getMessage(),
                     getFullStackTrace(e)));

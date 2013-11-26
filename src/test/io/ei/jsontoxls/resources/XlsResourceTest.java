@@ -5,6 +5,7 @@ import io.ei.jsontoxls.util.ExcelUtils;
 import io.ei.jsontoxls.util.JsonPojoConverter;
 import io.ei.jsontoxls.util.ObjectDeserializer;
 import io.ei.jsontoxls.util.PackageUtils;
+import org.codehaus.jackson.JsonParseException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -95,12 +96,26 @@ public class XlsResourceTest {
     public void shouldReturnErrorWhenEmptyJSONIsPosted() throws Exception {
         Response response = xlsResource.generateExcelFromTemplate("token", "");
 
-        assertEquals(response.getStatus(), 400);
-        assertEquals(response.getEntity(), "JSON data cannot be empty.");
+        assertEquals(400, response.getStatus());
+        assertEquals("JSON data cannot be empty.", response.getEntity());
         verifyZeroInteractions(templateRepository);
         verifyZeroInteractions(excelUtil);
         verifyZeroInteractions(converter);
         verifyZeroInteractions(objectDeserializer);
+    }
+
+    @Test
+    public void shouldReturnMalformedJSONErrorWhenInvalidJSONIsPosted() throws Exception {
+        String dataJson = "invalid JSON {";
+        when(templateRepository.findByToken("token")).thenReturn(new byte[]{1});
+        when(converter.generateJavaClasses(dataJson)).thenThrow(JsonParseException.class);
+
+        Response response = xlsResource.generateExcelFromTemplate("token", dataJson);
+
+        assertEquals(400, response.getStatus());
+        assertEquals("JSON is not valid.", response.getEntity());
+        verify(packageUtil).cleanup("");
+        verifyZeroInteractions(excelUtil);
     }
 }
 
