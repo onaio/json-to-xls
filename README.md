@@ -1,5 +1,7 @@
 ##Micro service to generate XLS files from XLS template and data in JSON format
 
+[![Build Status](https://api.travis-ci.org/SEL-Columbia/json-to-xls.png)](https://travis-ci.org/SEL-Columbia/json-to-xls)
+
 The following are the dependencies to run this project:
 
 * [Gradle](http://www.gradle.org/) for build
