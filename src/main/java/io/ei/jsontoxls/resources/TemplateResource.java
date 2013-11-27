@@ -38,7 +38,7 @@ public class TemplateResource {
                 return ResponseFactory.badRequest(Messages.INVALID_TEMPLATE);
             }
 
-            String token = UUID.randomUUID().toString();
+            String token = generateToken();
             templateRepository.add(token, templateData);
             logger.info(format("Saved template with {0} number of bytes. Token: {1}", templateData.length, token));
             return Response.status(Response.Status.CREATED).entity(token).type(MediaType.TEXT_PLAIN).build();
@@ -47,6 +47,10 @@ public class TemplateResource {
                     getFullStackTrace(e)));
             return ResponseFactory.internalServerError(Messages.UNABLE_TO_SAVE_TEMPLATE);
         }
+    }
+
+    private String generateToken() {
+        return UUID.randomUUID().toString().replace("-", "");
     }
 
 }
