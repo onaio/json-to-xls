@@ -3,7 +3,9 @@ package io.ei.jsontoxls;
 import com.yammer.dropwizard.Service;
 import com.yammer.dropwizard.config.Bootstrap;
 import com.yammer.dropwizard.config.Environment;
+import com.yammer.dropwizard.db.DatabaseConfiguration;
 import com.yammer.dropwizard.jdbi.DBIFactory;
+import com.yammer.dropwizard.migrations.MigrationsBundle;
 import io.ei.jsontoxls.health.JsonToXLSHealthCheck;
 import io.ei.jsontoxls.repository.TemplateRepository;
 import io.ei.jsontoxls.resources.TemplateResource;
@@ -21,7 +23,13 @@ public class JsonToXlsService extends Service<JsonToXlsConfiguration> {
 
     @Override
     public void initialize(Bootstrap<JsonToXlsConfiguration> bootstrap) {
-        bootstrap.setName("json-to-excel");
+        bootstrap.setName("json_to_xls");
+        bootstrap.addBundle(new MigrationsBundle<JsonToXlsConfiguration>() {
+            @Override
+            public DatabaseConfiguration getDatabaseConfiguration(JsonToXlsConfiguration configuration) {
+                return configuration.getDatabaseConfiguration();
+            }
+        });
     }
 
     @Override

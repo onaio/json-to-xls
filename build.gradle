@@ -36,6 +36,7 @@ dependencies {
     compile(
             'com.yammer.dropwizard:dropwizard-core:' + dropwizardVersion,
             'com.yammer.dropwizard:dropwizard-jdbi:' + dropwizardVersion,
+            'com.yammer.dropwizard:dropwizard-migrations:' + dropwizardVersion,
             'net.sf.jxls:jxls-core:1.0.2',
             'com.google.code.gson:gson:2.2.4',
             'commons-lang:commons-lang:2.6',
@@ -75,6 +76,13 @@ task start(dependsOn: 'shadow', group: 'dropwizard', description: "Run service u
     javaexec {
         main = '-jar'
         args = ["${shadow.shadowJar.getPath()}", 'server', 'json-to-xls.yml']
+    }
+}
+
+task dbStatus(dependsOn: 'shadow', group: 'dropwizard', description: "Run migrations using the dev configuration") << {
+    javaexec {
+        main = '-jar'
+        args = ["${shadow.shadowJar.getPath()}", 'db', 'status', 'json-to-xls.yml']
     }
 }
 
