@@ -3,7 +3,7 @@ apply plugin: 'maven'
 apply plugin: 'application'
 
 group = 'io.ei.jsontoxls'
-version = '0.2-SNAPSHOT'
+version = '1.0'
 ext.packaging = 'tar'
 mainClassName = 'io.ei.jsontoxls.JsonToXlsService'
 sourceCompatibility = '1.7'
