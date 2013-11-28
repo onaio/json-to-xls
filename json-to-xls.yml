@@ -17,3 +17,10 @@ logging:
   console:
     enabled: true
     threshold: ALL
+  file:
+    enabled: true
+    threshold: ALL
+    currentLogFilename: ./logs/json_to_xls.log
+    archivedLogFilenamePattern: ./logs/json_to_xls_%d.log.gz
+    archivedFileCount: 10
+    timeZone: IST
