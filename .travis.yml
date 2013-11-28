@@ -6,5 +6,4 @@ env:
     - secure: "Y6wjyuUR46lQpSYzU526gk4x7/IvOk+gYulKbnh/a4eI74p18Qen5mWK4TXJe92K6wOAoo7c+tpgl3xX1ad7zvtDdgZEySW71J06rBXeq7cZUCOgok7Z8Fg7nua0+Kq8X3JKxoq9ukK88qAlM4lN374tr6prRuF389KUR+Ko6tc="
 
 after_success:
-  - gradle shadow
   - gradle uploadArchives

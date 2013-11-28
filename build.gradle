@@ -1,7 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'maven'
-apply plugin: 'shadow'
-
+apply plugin: 'application'
 
 group = 'io.ei.jsontoxls'
 version = '0.2-SNAPSHOT'
@@ -13,18 +12,6 @@ dropwizardVersion = '0.6.2'
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-buildscript {
-    repositories {
-        maven {
-            name 'Gradle Shadow'
-            url 'http://dl.bintray.com/content/johnrengelman/gradle-plugins'
-        }
-    }
-    dependencies {
-        classpath 'org.gradle.plugins:shadow:0.7.4'
-    }
-}
-
 repositories {
     mavenCentral()
     maven {
@@ -33,75 +20,30 @@ repositories {
 }
 
 dependencies {
-    compile(
-            'com.yammer.dropwizard:dropwizard-core:' + dropwizardVersion,
-            'com.yammer.dropwizard:dropwizard-jdbi:' + dropwizardVersion,
-            'com.yammer.dropwizard:dropwizard-migrations:' + dropwizardVersion,
-            'net.sf.jxls:jxls-core:1.0.2',
-            'com.google.code.gson:gson:2.2.4',
-            'commons-lang:commons-lang:2.6',
-            'commons-io:commons-io:1.3.2',
-            'org.codehaus.jackson:jackson-core-lgpl:1.7.1',
-            'org.codehaus.jackson:jackson-mapper-lgpl:1.7.1',
-            'com.google.guava:guava:13.0',
-            fileTree('lib')
-    )
+    compile group: 'com.yammer.dropwizard', name: 'dropwizard-core', version: dropwizardVersion
+    compile group: 'com.yammer.dropwizard', name: 'dropwizard-jdbi', version: dropwizardVersion
+    compile group: 'com.yammer.dropwizard', name: 'dropwizard-migrations', version: dropwizardVersion
+    compile group: 'net.sf.jxls', name: 'jxls-core', version: '1.0.2'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.2.4'
+    compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
+    compile group: 'commons-io', name: 'commons-io', version: '1.3.2'
+    compile group: 'org.codehaus.jackson', name: 'jackson-core-lgpl', version: '1.7.1'
+    compile group: 'org.codehaus.jackson', name: 'jackson-mapper-lgpl', version: '1.7.1'
+    compile group: 'com.google.guava', name: 'guava', version: '13.0'
+    compile fileTree('lib')
 
-    runtime(
-            'postgresql:postgresql:9.1-901.jdbc4'
-    )
+    runtime group: 'postgresql', name: 'postgresql', version: '9.1-901.jdbc4'
 
-    testCompile(
-            'junit:junit:4.+',
-            'org.mockito:mockito - all: 1.+'
-    )
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.+'
 }
 
-jar {
-    manifest {
-        attributes 'Main-Class': mainClassName
-        attributes 'Built-Date': new Date() //now
-        attributes 'Implementation-Title': project.name
-        attributes 'Implementation-Version': version
-        attributes 'Implementation-Vendor-Id': group
-    }
-}
-
-shadow {
-    exclude 'META-INF/*.DSA'
-    exclude 'META-INF/*.RSA'
-}
-
-task start(dependsOn: 'shadow', group: 'dropwizard', description: "Run service using dev configuration") << {
-    javaexec {
-        main = '-jar'
-        args = ["${shadow.shadowJar.getPath()}", 'server', 'json-to-xls.yml']
-    }
-}
-
-task dbStatus(dependsOn: 'shadow', group: 'dropwizard', description: "Run migrations using the dev configuration") << {
-    javaexec {
-        main = '-jar'
-        args = ["${shadow.shadowJar.getPath()}", 'db', 'status', 'json-to-xls.yml']
-    }
-}
-
-task migrate(dependsOn: 'shadow', group: 'dropwizard', description: "Run migrations using the dev configuration") << {
-    javaexec {
-        main = '-jar'
-        args = ["${shadow.shadowJar.getPath()}", 'db', 'migrate', 'json-to-xls.yml']
-    }
-}
-
-task dropAll(dependsOn: 'shadow', group: 'dropwizard', description: "Run drop-all database command") << {
-    javaexec {
-        main = '-jar'
-        args = ["${shadow.shadowJar.getPath()}", 'db', 'drop-all', 'json-to-xls.yml', '--confirm-delete-everything']
-    }
+run {
+    args 'server', 'json-to-xls.yml'
 }
 
 artifacts {
-    archives shadow.shadowJar
+    archives distTar
 }
 
 uploadArchives {
