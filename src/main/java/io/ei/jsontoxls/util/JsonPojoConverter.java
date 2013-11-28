@@ -6,7 +6,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.UUID;
+
+import static io.ei.jsontoxls.util.UUIDUtils.newUUID;
 
 public class JsonPojoConverter {
     private Logger logger = LoggerFactory.getLogger(JsonPojoConverter.class);
@@ -21,8 +22,7 @@ public class JsonPojoConverter {
     }
 
     public String generateJavaClasses(String jsonString) throws IOException, ClassNotFoundException {
-        String uuidString = UUID.randomUUID().toString().replace("-", "");
-        String generatedPackageName = this.packageName + uuidString;
+        String generatedPackageName = this.packageName + newUUID();
         Generator generator = new Generator(this.outputDirectory, generatedPackageName, null, null);
         generator.generateClasses(className, jsonString);
         logger.info(MessageFormat.format("Generated package with name {0}", generatedPackageName));

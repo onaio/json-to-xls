@@ -7,7 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.MessageFormat;
+
+import static java.text.MessageFormat.format;
 
 public class PackageUtils {
     private Logger logger = LoggerFactory.getLogger(PackageUtils.class);
@@ -21,11 +22,11 @@ public class PackageUtils {
         File packageDirectory = new File(this.outputDirectory + "/" + packageName.replace(".", "/"));
         try {
             if (packageDirectory.exists()) {
-                logger.info(MessageFormat.format("Attempting to delete directory: {0}", packageDirectory.getPath()));
+                logger.info(format("Attempting to delete directory: {0}", packageDirectory.getPath()));
                 FileUtils.forceDelete(packageDirectory);
             }
         } catch (IOException e) {
-            logger.error(MessageFormat.format("Cleanup of package failed. Exception Message: {0}. Stack trace: {1}", e.getMessage(),
+            logger.error(format("Cleanup of package failed. Exception Message: {0}. Stack trace: {1}", e.getMessage(),
                     ExceptionUtils.getFullStackTrace(e)));
         }
     }

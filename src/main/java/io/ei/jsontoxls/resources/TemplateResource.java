@@ -13,8 +13,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.UUID;
 
+import static io.ei.jsontoxls.util.UUIDUtils.newUUID;
 import static java.text.MessageFormat.format;
 import static org.apache.commons.lang.exception.ExceptionUtils.getFullStackTrace;
 
@@ -38,7 +38,7 @@ public class TemplateResource {
                 return ResponseFactory.badRequest(Messages.INVALID_TEMPLATE);
             }
 
-            String token = generateToken();
+            String token = newUUID();
             templateRepository.add(token, templateData);
             logger.info(format("Saved template with {0} number of bytes. Token: {1}", templateData.length, token));
             return Response.status(Response.Status.CREATED).entity(token).type(MediaType.TEXT_PLAIN).build();
@@ -48,9 +48,4 @@ public class TemplateResource {
             return ResponseFactory.internalServerError(Messages.UNABLE_TO_SAVE_TEMPLATE);
         }
     }
-
-    private String generateToken() {
-        return UUID.randomUUID().toString().replace("-", "");
-    }
-
 }

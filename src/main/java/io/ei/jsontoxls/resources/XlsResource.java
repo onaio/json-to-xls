@@ -16,13 +16,14 @@ import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 
+import static io.ei.jsontoxls.AllConstants.*;
 import static io.ei.jsontoxls.util.ResponseFactory.*;
 import static java.text.MessageFormat.format;
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.exception.ExceptionUtils.getFullStackTrace;
 
-@Path("/xls/{token}")
-@Produces({"application/ms-excel"})
+@Path("/xls/{" + TOKEN_PATH_PARAM + "}")
+@Produces(MEDIA_TYPE_MS_EXCEL)
 public class XlsResource {
     private ExcelUtils excelUtil;
     private Logger logger = LoggerFactory.getLogger(XlsResource.class);
@@ -42,7 +43,7 @@ public class XlsResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response generateExcelFromTemplate(@PathParam("token") String token, String jsonData) {
+    public Response generateExcelFromTemplate(@PathParam(TOKEN_PATH_PARAM) String token, String jsonData) {
         logger.debug(format("Got request with Token: {0} and JSON: {1}", token, jsonData));
         String generatedPackageName = "";
         try {
@@ -55,7 +56,7 @@ public class XlsResource {
             }
             generatedPackageName = converter.generateJavaClasses(jsonData);
             Map<String, Object> beans = new HashMap<>();
-            beans.put("data", objectDeserializer.makeJsonObject(generatedPackageName, jsonData));
+            beans.put(ROOT_DATA_OBJECT, objectDeserializer.makeJsonObject(generatedPackageName, jsonData));
             return Response.ok(excelUtil.generateExcelWorkbook(beans, template)).build();
         } catch (JsonParseException e) {
             logger.error(format(Messages.MALFORMED_JSON, e.getMessage(),
@@ -69,5 +70,4 @@ public class XlsResource {
             packageUtil.cleanup(generatedPackageName);
         }
     }
-
 }
