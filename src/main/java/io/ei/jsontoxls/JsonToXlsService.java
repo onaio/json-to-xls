@@ -7,6 +7,7 @@ import com.yammer.dropwizard.db.DatabaseConfiguration;
 import com.yammer.dropwizard.jdbi.DBIFactory;
 import com.yammer.dropwizard.migrations.MigrationsBundle;
 import io.ei.jsontoxls.repository.TemplateRepository;
+import io.ei.jsontoxls.resources.APIResource;
 import io.ei.jsontoxls.resources.TemplateResource;
 import io.ei.jsontoxls.resources.XlsResource;
 import io.ei.jsontoxls.util.ExcelUtils;
@@ -44,10 +45,12 @@ public class JsonToXlsService extends Service<JsonToXlsConfiguration> {
         DBI dbInterface = factory.build(environment, configuration.getDatabaseConfiguration(), MICRO_SERVICE_NAME);
         TemplateRepository templateRepository = dbInterface.onDemand(TemplateRepository.class);
 
+        APIResource apiResource = new APIResource(configuration.apiDetailsFile());
+        TemplateResource templateResource = new TemplateResource(templateRepository, excelUtils);
         XlsResource xlsResource = new XlsResource(converter, objectDeserializer, packageUtil, excelUtils,
                 templateRepository);
-        TemplateResource templateResource = new TemplateResource(templateRepository, excelUtils);
-        environment.addResource(xlsResource);
+        environment.addResource(apiResource);
         environment.addResource(templateResource);
+        environment.addResource(xlsResource);
     }
 }

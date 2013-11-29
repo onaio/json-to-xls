@@ -1,3 +1,5 @@
+apiDetailsFile : api.txt
+
 database:
   driverClass: org.postgresql.Driver
   user: postgres

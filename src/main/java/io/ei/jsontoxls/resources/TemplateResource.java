@@ -41,7 +41,7 @@ public class TemplateResource {
             String token = newUUID();
             templateRepository.add(token, templateData);
             logger.info(format("Saved template with {0} number of bytes. Token: {1}", templateData.length, token));
-            return Response.status(Response.Status.CREATED).entity(token).type(MediaType.TEXT_PLAIN).build();
+            return ResponseFactory.created(token);
         } catch (Exception e) {
             logger.error(format("Unable to save template. Exception Message: {0}. Stack trace: {1}.", e.getMessage(),
                     getFullStackTrace(e)));

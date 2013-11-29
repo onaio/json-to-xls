@@ -1,0 +1,4 @@
+POST /templates, with excel template file as payload.
+    This saves the template and returns a unique token for that template in the response. Henceforth this token can be used for referring this template.
+POST /xls/<token> with JSON data as payload.
+    This will use the template corresponding to the token in the URL and generate an Excel file using the template and JSON data. This generated Excel file is returned in the response.
