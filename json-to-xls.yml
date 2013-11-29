@@ -1,4 +1,4 @@
-apiDetailsFile : api.txt
+apiDetailsFile: api.txt
 
 database:
   driverClass: org.postgresql.Driver
