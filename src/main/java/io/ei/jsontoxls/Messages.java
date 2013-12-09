@@ -8,4 +8,5 @@ public class Messages {
     public static final String UNABLE_TO_SAVE_TEMPLATE = "Unable to save template due to internal error.";
     public static final String UNABLE_TO_GENERATE_EXCEL_ERROR = "Unable to generate excel from template and JSON due to internal error.";
     public static final String MALFORMED_JSON = "JSON is not valid.";
+    public static final String INVALID_EXCEL_TOKEN = "Could not find a valid excel for the given token. Token: {0}.";
 }

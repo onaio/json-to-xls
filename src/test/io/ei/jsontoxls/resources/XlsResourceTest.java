@@ -131,5 +131,16 @@ public class XlsResourceTest {
         assertEquals(200, response.getStatus());
         verify(excelRepository).findByToken("token");
     }
+
+    @Test
+    public void shouldReturn404WhenThereIsNoExcelForGivenToken() throws Exception {
+        when(excelRepository.findByToken("token")).thenReturn(null);
+
+        Response response = xlsResource.get("token");
+
+        assertEquals(404, response.getStatus());
+        assertEquals("Could not find a valid excel for the given token. Token: token.", response.getEntity());
+
+    }
 }
 

@@ -15,6 +15,7 @@ import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,6 +83,10 @@ public class XlsResource {
     @Produces(MEDIA_TYPE_MS_EXCEL)
     public Response get(@PathParam(TOKEN_PATH_PARAM) String token) {
         byte[] generatedExcel = excelRepository.findByToken(token);
+        if (generatedExcel == null) {
+            return ResponseFactory.notFound(MessageFormat.format(Messages.INVALID_EXCEL_TOKEN, token));
+        }
+
         return ResponseFactory.excel(getExcelAsOutputStream(generatedExcel));
     }
 
