@@ -1,6 +1,8 @@
 package io.ei.jsontoxls.resources;
 
+import io.ei.jsontoxls.repository.ExcelRepository;
 import io.ei.jsontoxls.repository.TemplateRepository;
+import io.ei.jsontoxls.repository.TokenRepository;
 import io.ei.jsontoxls.util.ExcelUtils;
 import io.ei.jsontoxls.util.JsonPojoConverter;
 import io.ei.jsontoxls.util.ObjectDeserializer;
@@ -11,8 +13,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
-import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -31,15 +31,17 @@ public class XlsResourceTest {
     @Mock
     private ExcelUtils excelUtil;
     @Mock
-    private StreamingOutput streamingOutput;
-    @Mock
     private TemplateRepository templateRepository;
+    @Mock
+    private ExcelRepository excelRepository;
+    @Mock
+    private TokenRepository tokenRepository;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
         xlsResource = new XlsResource(converter, objectDeserializer, packageUtil, excelUtil,
-                templateRepository);
+                templateRepository, excelRepository);
     }
 
     @Test
@@ -56,15 +58,18 @@ public class XlsResourceTest {
                 "    }\n" +
                 "}";
         byte[] template = new byte[]{};
+        byte[] generatedExcel = new byte[]{};
         when(templateRepository.findByToken("token")).thenReturn(template);
         when(converter.generateJavaClasses(dataJson)).thenReturn("generated-package-name");
         when(objectDeserializer.makeJsonObject("generated-package-name", dataJson)).thenReturn(new Object());
-        when(excelUtil.generateExcelWorkbook(new HashMap<String, Object>(), template))
-                .thenReturn(streamingOutput);
+        when(excelUtil.generateExcel(anyMap(), eq(template)))
+                .thenReturn(generatedExcel);
 
         Response response = xlsResource.generateExcelFromTemplate("token", dataJson);
 
-        assertEquals(response.getStatus(), 200);
+        assertEquals(response.getStatus(), 201);
+        verify(excelUtil).generateExcel(anyMap(), eq(template));
+        verify(excelRepository).add(anyString(), eq(generatedExcel));
         verify(packageUtil).cleanup("generated-package-name");
     }
 
@@ -94,11 +99,12 @@ public class XlsResourceTest {
 
     @Test
     public void shouldReturnErrorWhenEmptyJSONIsPosted() throws Exception {
+        when(templateRepository.findByToken("token")).thenReturn(new byte[]{});
+
         Response response = xlsResource.generateExcelFromTemplate("token", "");
 
         assertEquals(400, response.getStatus());
         assertEquals("JSON data cannot be empty.", response.getEntity());
-        verifyZeroInteractions(templateRepository);
         verifyZeroInteractions(excelUtil);
         verifyZeroInteractions(converter);
         verifyZeroInteractions(objectDeserializer);

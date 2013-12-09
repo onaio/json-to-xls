@@ -19,4 +19,17 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="2" author="Sowmya, Kiran">
+        <createTable tableName="excel">
+            <column name="id" type="serial" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="token" type="varchar(100)">
+                <constraints unique="true" uniqueConstraintName="uk_excel_token" nullable="false"/>
+            </column>
+            <column name="data" type="bytea">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

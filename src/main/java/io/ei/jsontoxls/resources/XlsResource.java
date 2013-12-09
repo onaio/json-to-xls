@@ -1,11 +1,9 @@
 package io.ei.jsontoxls.resources;
 
 import io.ei.jsontoxls.Messages;
+import io.ei.jsontoxls.repository.ExcelRepository;
 import io.ei.jsontoxls.repository.TemplateRepository;
-import io.ei.jsontoxls.util.ExcelUtils;
-import io.ei.jsontoxls.util.JsonPojoConverter;
-import io.ei.jsontoxls.util.ObjectDeserializer;
-import io.ei.jsontoxls.util.PackageUtils;
+import io.ei.jsontoxls.util.*;
 import org.codehaus.jackson.JsonParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,17 +11,18 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.ei.jsontoxls.AllConstants.*;
+import static io.ei.jsontoxls.AllConstants.ROOT_DATA_OBJECT;
+import static io.ei.jsontoxls.AllConstants.TOKEN_PATH_PARAM;
 import static io.ei.jsontoxls.util.ResponseFactory.*;
 import static java.text.MessageFormat.format;
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.exception.ExceptionUtils.getFullStackTrace;
 
 @Path("/xls/{" + TOKEN_PATH_PARAM + "}")
-@Produces(MEDIA_TYPE_MS_EXCEL)
 public class XlsResource {
     private ExcelUtils excelUtil;
     private Logger logger = LoggerFactory.getLogger(XlsResource.class);
@@ -31,18 +30,21 @@ public class XlsResource {
     private ObjectDeserializer objectDeserializer;
     private PackageUtils packageUtil;
     private TemplateRepository templateRepository;
+    private ExcelRepository excelRepository;
 
     public XlsResource(JsonPojoConverter converter, ObjectDeserializer objectDeserializer, PackageUtils packageUtil,
-                       ExcelUtils excelUtil, TemplateRepository templateRepository) {
+                       ExcelUtils excelUtil, TemplateRepository templateRepository, ExcelRepository excelRepository) {
         this.converter = converter;
         this.objectDeserializer = objectDeserializer;
         this.packageUtil = packageUtil;
         this.excelUtil = excelUtil;
         this.templateRepository = templateRepository;
+        this.excelRepository = excelRepository;
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces("text/plain")
     public Response generateExcelFromTemplate(@PathParam(TOKEN_PATH_PARAM) String token, String jsonData) {
         logger.debug(format("Got request with Token: {0} and JSON: {1}", token, jsonData));
         String generatedPackageName = "";
@@ -57,7 +59,14 @@ public class XlsResource {
             generatedPackageName = converter.generateJavaClasses(jsonData);
             Map<String, Object> beans = new HashMap<>();
             beans.put(ROOT_DATA_OBJECT, objectDeserializer.makeJsonObject(generatedPackageName, jsonData));
-            return Response.ok(excelUtil.generateExcelWorkbook(beans, template)).build();
+            byte[] generatedExcel = excelUtil.generateExcel(beans, template);
+            String generatedExcelToken = UUIDUtils.newUUID();
+            excelRepository.add(generatedExcelToken, generatedExcel);
+            return Response
+                    .ok()
+                    .entity(URI.create("/xls/" + generatedExcelToken).toString())
+                    .header("Access-Control-Allow-Origin", "http://localhost:9000")
+                    .build();
         } catch (JsonParseException e) {
             logger.error(format(Messages.MALFORMED_JSON, e.getMessage(),
                     getFullStackTrace(e)));

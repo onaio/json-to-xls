@@ -24,13 +24,13 @@ public class ExcelUtils {
         return true;
     }
 
-    public StreamingOutput generateExcelWorkbook(Map<String, Object> beans,
-                                                 byte[] template) throws InvalidFormatException, IOException {
+    public byte[] generateExcel(Map<String, Object> beans,
+                                byte[] template) throws InvalidFormatException, IOException {
         XLSTransformer transformer = new XLSTransformer();
         Workbook workbook = transformer.transformXLS(new ByteArrayInputStream(template), beans);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         workbook.write(outputStream);
-        return getExcelAsOutputStream(outputStream.toByteArray());
+        return outputStream.toByteArray();
     }
 
     private StreamingOutput getExcelAsOutputStream(final byte[] excelBytes) {
