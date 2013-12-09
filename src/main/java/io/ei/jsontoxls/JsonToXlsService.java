@@ -6,6 +6,7 @@ import com.yammer.dropwizard.config.Environment;
 import com.yammer.dropwizard.db.DatabaseConfiguration;
 import com.yammer.dropwizard.jdbi.DBIFactory;
 import com.yammer.dropwizard.migrations.MigrationsBundle;
+import io.ei.jsontoxls.filter.CorsFilter;
 import io.ei.jsontoxls.repository.TemplateRepository;
 import io.ei.jsontoxls.resources.APIResource;
 import io.ei.jsontoxls.resources.TemplateResource;
@@ -37,6 +38,8 @@ public class JsonToXlsService extends Service<JsonToXlsConfiguration> {
 
     @Override
     public void run(JsonToXlsConfiguration configuration, Environment environment) throws Exception {
+        environment.addFilter(CorsFilter.class, "/*");
+
         JsonPojoConverter converter = new JsonPojoConverter(DOMAIN_PACKAGE, ROOT_CLASS_NAME, GENERATED_CLASSES_OUTPUT_DIRECTORY);
         ObjectDeserializer objectDeserializer = new ObjectDeserializer(GENERATED_CLASSES_OUTPUT_DIRECTORY, ROOT_CLASS_NAME);
         PackageUtils packageUtil = new PackageUtils(GENERATED_CLASSES_OUTPUT_DIRECTORY);
