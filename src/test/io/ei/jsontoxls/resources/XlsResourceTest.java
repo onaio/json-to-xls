@@ -2,7 +2,6 @@ package io.ei.jsontoxls.resources;
 
 import io.ei.jsontoxls.repository.ExcelRepository;
 import io.ei.jsontoxls.repository.TemplateRepository;
-import io.ei.jsontoxls.repository.TokenRepository;
 import io.ei.jsontoxls.util.ExcelUtils;
 import io.ei.jsontoxls.util.JsonPojoConverter;
 import io.ei.jsontoxls.util.ObjectDeserializer;
@@ -34,8 +33,6 @@ public class XlsResourceTest {
     private TemplateRepository templateRepository;
     @Mock
     private ExcelRepository excelRepository;
-    @Mock
-    private TokenRepository tokenRepository;
 
     @Before
     public void setUp() throws Exception {
@@ -122,6 +119,17 @@ public class XlsResourceTest {
         assertEquals("JSON is not valid.", response.getEntity());
         verify(packageUtil).cleanup("");
         verifyZeroInteractions(excelUtil);
+    }
+
+    @Test
+    public void shouldReturnXLSForGivenToken() throws Exception {
+        byte[] expectedGeneratedExcel = new byte[]{};
+        when(excelRepository.findByToken("token")).thenReturn(expectedGeneratedExcel);
+
+        Response response = xlsResource.get("token");
+
+        assertEquals(200, response.getStatus());
+        verify(excelRepository).findByToken("token");
     }
 }
 

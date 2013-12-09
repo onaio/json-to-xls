@@ -2,13 +2,13 @@ package io.ei.jsontoxls.util;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 
+import static io.ei.jsontoxls.AllConstants.MEDIA_TYPE_MS_EXCEL;
 import static javax.ws.rs.core.Response.Status.*;
 
 public class ResponseFactory {
 
-    public static Response ok(String entity) throws IOException {
+    public static Response ok(String entity) {
         return Response
                 .ok()
                 .entity(entity)
@@ -16,10 +16,18 @@ public class ResponseFactory {
                 .build();
     }
 
-    public static Response created(String token) {
+    public static Response excel(Object entity) {
+        return Response
+                .ok()
+                .entity(entity)
+                .type(MEDIA_TYPE_MS_EXCEL)
+                .build();
+    }
+
+    public static Response created(String entity) {
         return Response
                 .status(CREATED)
-                .entity(token)
+                .entity(entity)
                 .type(MediaType.TEXT_PLAIN)
                 .build();
     }

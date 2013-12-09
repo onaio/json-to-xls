@@ -11,12 +11,14 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.ei.jsontoxls.AllConstants.ROOT_DATA_OBJECT;
-import static io.ei.jsontoxls.AllConstants.TOKEN_PATH_PARAM;
+import static io.ei.jsontoxls.AllConstants.*;
 import static io.ei.jsontoxls.util.ResponseFactory.*;
 import static java.text.MessageFormat.format;
 import static org.apache.commons.lang.StringUtils.isBlank;
@@ -45,16 +47,16 @@ public class XlsResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces("text/plain")
-    public Response generateExcelFromTemplate(@PathParam(TOKEN_PATH_PARAM) String token, String jsonData) {
-        logger.debug(format("Got request with Token: {0} and JSON: {1}", token, jsonData));
+    public Response generateExcelFromTemplate(@PathParam(TOKEN_PATH_PARAM) String templateToken, String jsonData) {
+        logger.debug(format("Got request with Token: {0} and JSON: {1}", templateToken, jsonData));
         String generatedPackageName = "";
         try {
-            byte[] template = templateRepository.findByToken(token);
+            byte[] template = templateRepository.findByToken(templateToken);
             if (template == null) {
-                return notFound(format(Messages.INVALID_TOKEN, token));
+                return notFound(format(Messages.INVALID_TOKEN, templateToken));
             }
             if (isBlank(jsonData)) {
-                return badRequest(format(Messages.EMPTY_JSON_DATA, token));
+                return badRequest(format(Messages.EMPTY_JSON_DATA, templateToken));
             }
             generatedPackageName = converter.generateJavaClasses(jsonData);
             Map<String, Object> beans = new HashMap<>();
@@ -62,11 +64,7 @@ public class XlsResource {
             byte[] generatedExcel = excelUtil.generateExcel(beans, template);
             String generatedExcelToken = UUIDUtils.newUUID();
             excelRepository.add(generatedExcelToken, generatedExcel);
-            return Response
-                    .ok()
-                    .entity(URI.create("/xls/" + generatedExcelToken).toString())
-                    .header("Access-Control-Allow-Origin", "http://localhost:9000")
-                    .build();
+            return ResponseFactory.created(URI.create("/xls/" + generatedExcelToken).toString());
         } catch (JsonParseException e) {
             logger.error(format(Messages.MALFORMED_JSON, e.getMessage(),
                     getFullStackTrace(e)));
@@ -78,5 +76,21 @@ public class XlsResource {
         } finally {
             packageUtil.cleanup(generatedPackageName);
         }
+    }
+
+    @GET
+    @Produces(MEDIA_TYPE_MS_EXCEL)
+    public Response get(@PathParam(TOKEN_PATH_PARAM) String token) {
+        byte[] generatedExcel = excelRepository.findByToken(token);
+        return ResponseFactory.excel(getExcelAsOutputStream(generatedExcel));
+    }
+
+    private StreamingOutput getExcelAsOutputStream(final byte[] excelBytes) {
+        return new StreamingOutput() {
+            @Override
+            public void write(OutputStream out) throws IOException, WebApplicationException {
+                out.write(excelBytes);
+            }
+        };
     }
 }
