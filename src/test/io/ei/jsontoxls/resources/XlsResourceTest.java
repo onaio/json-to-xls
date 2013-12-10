@@ -56,17 +56,17 @@ public class XlsResourceTest {
                 "}";
         byte[] template = new byte[]{};
         byte[] generatedExcel = new byte[]{};
-        when(templateRepository.findByToken("token")).thenReturn(template);
+        when(templateRepository.findByToken("template_token")).thenReturn(template);
         when(converter.generateJavaClasses(dataJson)).thenReturn("generated-package-name");
         when(objectDeserializer.makeJsonObject("generated-package-name", dataJson)).thenReturn(new Object());
         when(excelUtil.generateExcel(anyMap(), eq(template)))
                 .thenReturn(generatedExcel);
 
-        Response response = xlsResource.generateExcelFromTemplate("token", dataJson);
+        Response response = xlsResource.generateExcelFromTemplate("template_token", dataJson);
 
         assertEquals(response.getStatus(), 201);
         verify(excelUtil).generateExcel(anyMap(), eq(template));
-        verify(excelRepository).add(anyString(), eq(generatedExcel));
+        verify(excelRepository).add(anyString(), eq("template_token"), eq(generatedExcel));
         verify(packageUtil).cleanup("generated-package-name");
     }
 
@@ -140,7 +140,6 @@ public class XlsResourceTest {
 
         assertEquals(404, response.getStatus());
         assertEquals("Could not find a valid excel for the given token. Token: token.", response.getEntity());
-
     }
 }
 

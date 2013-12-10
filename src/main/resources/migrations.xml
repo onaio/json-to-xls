@@ -27,9 +27,20 @@
             <column name="token" type="varchar(100)">
                 <constraints unique="true" uniqueConstraintName="uk_excel_token" nullable="false"/>
             </column>
+            <column name="template_token" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
             <column name="data" type="bytea">
                 <constraints nullable="false"/>
             </column>
+            <column name="created_timestamp" type="timestamp" defaultValueComputed="current_timestamp(0)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
+        <addForeignKeyConstraint baseColumnNames="template_token"
+                                 baseTableName="excel"
+                                 constraintName="fk_excel_template_token"
+                                 referencedColumnNames="token"
+                                 referencedTableName="template"/>
     </changeSet>
 </databaseChangeLog>

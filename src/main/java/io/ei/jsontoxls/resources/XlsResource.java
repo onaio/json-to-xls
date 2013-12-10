@@ -64,7 +64,7 @@ public class XlsResource {
             beans.put(ROOT_DATA_OBJECT, objectDeserializer.makeJsonObject(generatedPackageName, jsonData));
             byte[] generatedExcel = excelUtil.generateExcel(beans, template);
             String generatedExcelToken = UUIDUtils.newUUID();
-            excelRepository.add(generatedExcelToken, generatedExcel);
+            excelRepository.add(generatedExcelToken, templateToken, generatedExcel);
             return ResponseFactory.created(URI.create("/xls/" + generatedExcelToken).toString());
         } catch (JsonParseException e) {
             logger.error(format(Messages.MALFORMED_JSON, e.getMessage(),
