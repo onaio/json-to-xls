@@ -13,6 +13,7 @@ public class JsonToXlsConfiguration extends Configuration {
     @JsonProperty
     private DatabaseConfiguration database = new DatabaseConfiguration();
 
+    @Valid
     @NotNull
     @JsonProperty
     private String apiDetailsFile;
