@@ -9,4 +9,4 @@ before_script:
   - gradle clean build
   
 after_success:
-  - gradle uploadArchivesgradle cleanTest tes
+  - gradle uploadArchives
