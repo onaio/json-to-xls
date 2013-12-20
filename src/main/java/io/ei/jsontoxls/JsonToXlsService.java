@@ -8,8 +8,6 @@ import com.yammer.dropwizard.jdbi.DBIFactory;
 import com.yammer.dropwizard.migrations.MigrationsBundle;
 import de.spinscale.dropwizard.jobs.JobsBundle;
 import io.ei.jsontoxls.filter.CorsFilter;
-import io.ei.jsontoxls.repository.ExcelRepository;
-import io.ei.jsontoxls.repository.TemplateRepository;
 import io.ei.jsontoxls.resources.APIResource;
 import io.ei.jsontoxls.resources.TemplateResource;
 import io.ei.jsontoxls.resources.XlsResource;
@@ -22,6 +20,8 @@ import org.skife.jdbi.v2.DBI;
 import static io.ei.jsontoxls.AllConstants.*;
 
 public class JsonToXlsService extends Service<JsonToXlsConfiguration> {
+
+    private Context context;
 
     public static void main(String[] args) throws Exception {
         new JsonToXlsService().run(args);
@@ -46,16 +46,19 @@ public class JsonToXlsService extends Service<JsonToXlsConfiguration> {
         JsonPojoConverter converter = new JsonPojoConverter(DOMAIN_PACKAGE, ROOT_CLASS_NAME, GENERATED_CLASSES_OUTPUT_DIRECTORY);
         ObjectDeserializer objectDeserializer = new ObjectDeserializer(GENERATED_CLASSES_OUTPUT_DIRECTORY, ROOT_CLASS_NAME);
         PackageUtils packageUtil = new PackageUtils(GENERATED_CLASSES_OUTPUT_DIRECTORY);
-        ExcelUtils excelUtils = new ExcelUtils();
         DBIFactory factory = new DBIFactory();
         DBI dbInterface = factory.build(environment, configuration.getDatabaseConfiguration(), MICRO_SERVICE_NAME);
-        TemplateRepository templateRepository = dbInterface.onDemand(TemplateRepository.class);
-        ExcelRepository excelRepository = dbInterface.onDemand(ExcelRepository.class);
+        ExcelUtils excelUtils = new ExcelUtils();
+
+        context = Context.getInstance()
+                .updateEnvironment(environment)
+                .updateJSONToXlsConfiguration(configuration)
+                .updateDBInterface(dbInterface);
 
         APIResource apiResource = new APIResource(configuration.apiDetailsFile());
-        TemplateResource templateResource = new TemplateResource(templateRepository, excelUtils);
+        TemplateResource templateResource = new TemplateResource(context.templateRepository(), excelUtils);
         XlsResource xlsResource = new XlsResource(converter, objectDeserializer, packageUtil, excelUtils,
-                templateRepository, excelRepository);
+                context.templateRepository(), context.excelRepository());
         environment.addResource(apiResource);
         environment.addResource(templateResource);
         environment.addResource(xlsResource);

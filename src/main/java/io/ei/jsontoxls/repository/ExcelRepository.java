@@ -10,4 +10,7 @@ public interface ExcelRepository {
 
     @SqlQuery("SELECT data FROM excel WHERE token = :token")
     byte[] findByToken(@Bind("token") String token);
+
+    @SqlUpdate("DELETE FROM excel WHERE created_timestamp < current_timestamp - interval '24' hour")
+    void deleteAllExcelsCreatedADayBefore();
 }
