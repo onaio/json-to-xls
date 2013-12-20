@@ -6,6 +6,7 @@ import com.yammer.dropwizard.config.Environment;
 import com.yammer.dropwizard.db.DatabaseConfiguration;
 import com.yammer.dropwizard.jdbi.DBIFactory;
 import com.yammer.dropwizard.migrations.MigrationsBundle;
+import de.spinscale.dropwizard.jobs.JobsBundle;
 import io.ei.jsontoxls.filter.CorsFilter;
 import io.ei.jsontoxls.repository.ExcelRepository;
 import io.ei.jsontoxls.repository.TemplateRepository;
@@ -35,6 +36,7 @@ public class JsonToXlsService extends Service<JsonToXlsConfiguration> {
                 return configuration.getDatabaseConfiguration();
             }
         });
+        bootstrap.addBundle(new JobsBundle("io.ei.jsontoxls"));
     }
 
     @Override
