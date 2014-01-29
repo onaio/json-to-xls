@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
 
-@On("0/15 * * * * ?")
+@On("59 59 23 * * ?")
 public class ExcelDeleteScheduler extends Job {
     Logger logger = LoggerFactory.getLogger(ExcelDeleteScheduler.class);
     private Context context;
