@@ -20,6 +20,8 @@ public class CorsFilter implements Filter {
                          ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+        httpResponse.addHeader("Access-Control-Allow-Origin", "*");
+        httpResponse.addHeader("Access-Control-Max-Age", "1");
         httpResponse.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
 
         Enumeration requestHeaderNames = ((HttpServletRequest) request).getHeaderNames();
