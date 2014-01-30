@@ -20,9 +20,9 @@ public class CorsFilter implements Filter {
                          ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        httpResponse.addHeader("Access-Control-Allow-Origin", "*");
-        httpResponse.addHeader("Access-Control-Max-Age", "1");
-        httpResponse.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+        httpResponse.setHeader("Access-Control-Allow-Origin", "*");
+        httpResponse.setHeader("Access-Control-Max-Age", "1");
+        httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
 
         Enumeration requestHeaderNames = ((HttpServletRequest) request).getHeaderNames();
         List<String> allowedHeaders = new ArrayList<>();
@@ -31,7 +31,7 @@ public class CorsFilter implements Filter {
             allowedHeaders.add(header);
         }
         allowedHeaders.add("Content-Type");
-        httpResponse.addHeader("Access-Control-Allow-Headers", StringUtils.join(allowedHeaders, ", "));
+        httpResponse.setHeader("Access-Control-Allow-Headers", StringUtils.join(allowedHeaders, ", "));
 
         chain.doFilter(request, response);
     }
