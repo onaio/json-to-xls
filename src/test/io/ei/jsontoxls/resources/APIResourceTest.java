@@ -13,7 +13,9 @@ public class APIResourceTest {
                 "POST /xls/<template_token> with JSON data as payload.\n" +
                 "    This will use the template corresponding to the token in the URL and generate an Excel file using the template and JSON data. The URL using which this excel file can be downloaded is returned in the response.\n" +
                 "GET /xls/<generated_excel_token>\n" +
-                "    This returns the excel file for given token.";
+                "    This returns the excel file for given token.\n" +
+                "PUT /xls/<template_token> with JSON data as payload.\n" +
+                "    This will update the template corresponding to the token in the URL. The URL using which this excel file can be downloaded is returned in the response.";
 
         assertEquals(expectedDetails, new APIResource("api.txt").details().getEntity());
     }

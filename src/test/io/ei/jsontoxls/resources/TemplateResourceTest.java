@@ -40,7 +40,7 @@ public class TemplateResourceTest {
     }
 
     @Test
-    public void shouldReturnInternalServerErrorWhenThereIsAnException() throws Exception {
+    public void shouldReturnInternalServerErrorWhenThereIsAnExceptionWhileSaving() throws Exception {
         byte[] templateData = new byte[]{1};
         when(excelUtil.isExcel(templateData)).thenReturn(true);
         doThrow(new RuntimeException()).when(repository).add(anyString(), eq(templateData));
@@ -61,5 +61,70 @@ public class TemplateResourceTest {
         assertEquals(400, response.getStatus());
         assertEquals("Template is not a valid Excel.", response.getEntity());
         verifyZeroInteractions(repository);
+    }
+
+    @Test
+    public void shouldUpdateTemplate() throws Exception {
+        byte[] templateData = new byte[]{1};
+        byte[] existingTemplateData = new byte[]{1};
+        String token = "Token";
+        when(excelUtil.isExcel(templateData)).thenReturn(true);
+        when(repository.findByToken(token)).thenReturn(existingTemplateData);
+
+        Response response = resource.update(token, templateData);
+
+        assertEquals(200, response.getStatus());
+        verify(repository).update(token, templateData);
+    }
+
+    @Test
+    public void shouldReturnInternalServerErrorWhenThereIsAnExceptionWhileUpdating() throws Exception {
+        byte[] templateData = new byte[]{1};
+        byte[] existingTemplateData = new byte[]{1};
+        String token = "Token";
+        when(excelUtil.isExcel(templateData)).thenReturn(true);
+        when(repository.findByToken(token)).thenReturn(existingTemplateData);
+        doThrow(new RuntimeException()).when(repository).update(token, templateData);
+
+        Response response = resource.update(token, templateData);
+
+        assertEquals(500, response.getStatus());
+        assertEquals("Unable to update template due to internal error.", response.getEntity());
+    }
+
+    @Test
+    public void shouldReturnNotFoundWhenThereIsNoTemplateToUpdateMatchingTheToken() throws Exception {
+        byte[] templateData = new byte[]{1};
+        String token = "Token";
+        when(repository.findByToken("token")).thenReturn(null);
+        when(excelUtil.isExcel(templateData)).thenReturn(true);
+
+        Response response = resource.update(token, templateData);
+
+        assertEquals(404, response.getStatus());
+        assertEquals("Could not find a valid template for the given token. Token: Token.", response.getEntity());
+    }
+
+    @Test
+    public void shouldGetTemplateForAGivenToken() {
+        byte[] templateData = new byte[]{1};
+        String token = "Token";
+        when(repository.findByToken(token)).thenReturn(templateData);
+
+        Response response = resource.get(token);
+
+        assertEquals(200, response.getStatus());
+        verify(repository).findByToken(token);
+    }
+
+    @Test
+    public void shouldReturnNotFoundWhenThereIsNoTemplateMatchingTheToken() throws Exception {
+        String token = "Token";
+        when(repository.findByToken(token)).thenReturn(null);
+
+        Response response = resource.get(token);
+
+        assertEquals(404, response.getStatus());
+        assertEquals("Could not find a valid template for the given token. Token: Token.", response.getEntity());
     }
 }

@@ -4,3 +4,5 @@ POST /xls/<template_token> with JSON data as payload.
     This will use the template corresponding to the token in the URL and generate an Excel file using the template and JSON data. The URL using which this excel file can be downloaded is returned in the response.
 GET /xls/<generated_excel_token>
     This returns the excel file for given token.
+PUT /xls/<template_token> with JSON data as payload.
+    This will update the template corresponding to the token in the URL. The URL using which this excel file can be downloaded is returned in the response.

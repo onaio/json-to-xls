@@ -10,4 +10,7 @@ public interface TemplateRepository {
 
     @SqlQuery("SELECT data FROM template WHERE token = :token")
     byte[] findByToken(@Bind("token") String token);
+
+    @SqlUpdate("UPDATE template SET data = :data WHERE token = :token")
+    void update(@Bind("token") String token, @Bind("data") byte[] data);
 }
