@@ -25,12 +25,39 @@ http://xls.ona.io
 The [school-example.xls](school-example.xls) provides a simple example of an XLS
 template.
 
+![](https://www.evernote.com/shard/s2/sh/a9ad92f8-3dbf-4a9b-b290-3ce4a81914a1/edb72035d554c9092af82afbb6091ef6/deep/0/Screenshot-3-16-14,-11-46-AM.png)
 
 Top level element in the template must be ${data}.
 
 You can use the power of excel functions in your template. Just make sure to wrap it with $[...].
 
 ex) =A1+B2 becomes $[A1+B1]
+
+### Data (JSON)
+
+```json
+{
+    "district": "District A",
+    "schools": [
+        {
+            "name": "School A",
+            "males": 40,
+            "females": 50
+        },
+        {
+            "name": "School B",
+            "males": 56,
+            "females": 45
+        },
+        {
+            "name": "School C",
+            "males": 34,
+            "females": 63
+        }
+    ]
+}
+
+```
 
 ### Usage Example
 
@@ -58,4 +85,4 @@ ex) =A1+B2 becomes $[A1+B1]
 
 6. Congrats! You have a dynamically filled out XLS file!
 
-   [response-example.xls](responseexample.xls)
+   [school-example-response.xls](school-example-response.xls)
