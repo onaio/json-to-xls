@@ -1,0 +1,20 @@
+{
+    "district": "District A",
+    "schools": [
+        {
+            "name": "School A",
+            "males": 40,
+            "females": 50
+        },
+        {
+            "name": "School B",
+            "males": 56,
+            "females": 45
+        },
+        {
+            "name": "School C",
+            "males": 34,
+            "females": 63
+        }
+    ]
+}
