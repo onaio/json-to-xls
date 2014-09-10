@@ -19,6 +19,11 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonElement;
+
 import static io.ei.jsontoxls.AllConstants.*;
 import static io.ei.jsontoxls.util.ResponseFactory.*;
 import static java.text.MessageFormat.format;
@@ -59,7 +64,18 @@ public class XlsResource {
             if (isBlank(jsonData)) {
                 return badRequest(format(Messages.EMPTY_JSON_DATA, templateToken));
             }
+            if(jsonData.startsWith("[")){
+                //Able to handle json array
+                JsonParser parser = new JsonParser();
+                JsonElement elem = parser.parse(jsonData);
+                JsonObject obj = new JsonObject();
+                obj.add("data", elem);
+                jsonData = obj.toString();
+            }
+            
+            
             generatedPackageName = converter.generateJavaClasses(jsonData);
+            
             Map<String, Object> beans = new HashMap<>();
             beans.put(ROOT_DATA_OBJECT, objectDeserializer.makeJsonObject(generatedPackageName, jsonData));
             byte[] generatedExcel = excelUtil.generateExcel(beans, template);
