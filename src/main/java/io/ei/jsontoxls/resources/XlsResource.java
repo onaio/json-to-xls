@@ -69,7 +69,7 @@ public class XlsResource {
                 JsonParser parser = new JsonParser();
                 JsonElement elem = parser.parse(jsonData);
                 JsonObject obj = new JsonObject();
-                obj.add("data", elem);
+                obj.add(ROOT_DATA_OBJECT, elem);
                 jsonData = obj.toString();
             }
             
