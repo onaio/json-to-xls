@@ -141,5 +141,45 @@ public class XlsResourceTest {
         assertEquals(404, response.getStatus());
         assertEquals("Could not find a valid excel for the given token. Token: token.", response.getEntity());
     }
+
+    @Test
+    public void shouldGenerateXLSUsingTokenAndJSONDataWhichHasJsonArrayAsRootNode() throws Exception {
+        String dataJson = "[{\n" +
+                "    \"loc\": {\n" +
+                "        \"state\": \"Karnataka\",\n" +
+                "        \"district\": \"Mysore\"\n" +
+                "    },\n" +
+                "    \"ind\": {\n" +
+                "        \"anc\": \"1\",\n" +
+                "        \"anc_12\": \"2\",\n" +
+                "        \"anc_jsy\": \"3\"\n" +
+                "    }\n" +
+                "}, {\n" +
+                "    \"loc\": {\n" +
+                "        \"state\": \"Karnataka1\",\n" +
+                "        \"district\": \"Mysore2\"\n" +
+                "    },\n" +
+                "    \"ind\": {\n" +
+                "        \"anc\": \"4\",\n" +
+                "        \"anc_12\": \"5\",\n" +
+                "        \"anc_jsy\": \"6\"\n" +
+                "    }\n" +
+                "}]";
+
+        byte[] template = new byte[]{};
+        byte[] generatedExcel = new byte[]{};
+        when(templateRepository.findByToken("template_token")).thenReturn(template);
+        when(converter.generateJavaClasses(dataJson)).thenReturn("generated-package-name");
+        when(objectDeserializer.makeJsonObject("generated-package-name", dataJson)).thenReturn(new Object());
+        when(excelUtil.generateExcel(anyMap(), eq(template)))
+                .thenReturn(generatedExcel);
+
+        Response response = xlsResource.generateExcelFromTemplate("template_token", dataJson);
+
+        assertEquals(response.getStatus(), 201);
+        verify(excelUtil).generateExcel(anyMap(), eq(template));
+        verify(excelRepository).add(anyString(), eq("template_token"), eq(generatedExcel));
+       //verify(packageUtil).cleanup("generated-package-name");
+    }
 }
 
