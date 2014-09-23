@@ -170,7 +170,7 @@ public class XlsResourceTest {
         byte[] generatedExcel = new byte[]{};
         when(templateRepository.findByToken("template_token")).thenReturn(template);
         when(converter.generateJavaClasses(dataJson)).thenReturn("generated-package-name");
-        when(objectDeserializer.makeJsonObject("generated-package-name", dataJson)).thenReturn(new Object());
+        when(objectDeserializer.makeJsonList("generated-package-name", dataJson)).thenReturn(new Object());
         when(excelUtil.generateExcel(anyMap(), eq(template)))
                 .thenReturn(generatedExcel);
 
@@ -179,7 +179,6 @@ public class XlsResourceTest {
         assertEquals(response.getStatus(), 201);
         verify(excelUtil).generateExcel(anyMap(), eq(template));
         verify(excelRepository).add(anyString(), eq("template_token"), eq(generatedExcel));
-       //verify(packageUtil).cleanup("generated-package-name");
     }
 }
 

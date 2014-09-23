@@ -64,13 +64,18 @@ public class XlsResource {
             if (isBlank(jsonData)) {
                 return badRequest(format(Messages.EMPTY_JSON_DATA, templateToken));
             }
+
             if(jsonData.startsWith("[")){
                 //Able to handle json array
-                JsonParser parser = new JsonParser();
-                JsonElement elem = parser.parse(jsonData);
-                JsonObject obj = new JsonObject();
-                obj.add(ROOT_DATA_OBJECT, elem);
-                jsonData = obj.toString();
+                
+                Map<String, Object> beans = new HashMap<>();
+                beans.put(ROOT_DATA_OBJECT, objectDeserializer.makeJsonList(generatedPackageName,
+                    jsonData));
+                byte[] generatedExcel = excelUtil.generateExcel(beans, template);
+                String generatedExcelToken = UUIDUtils.newUUID();
+                excelRepository.add(generatedExcelToken, templateToken, generatedExcel);
+
+                return ResponseFactory.created(URI.create("/xls/" + generatedExcelToken).toString());
             }
             
             
