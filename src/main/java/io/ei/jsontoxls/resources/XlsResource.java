@@ -19,11 +19,6 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonElement;
-
 import static io.ei.jsontoxls.AllConstants.*;
 import static io.ei.jsontoxls.util.ResponseFactory.*;
 import static java.text.MessageFormat.format;
@@ -56,6 +51,7 @@ public class XlsResource {
     public Response generateExcelFromTemplate(@PathParam(TOKEN_PATH_PARAM) String templateToken, String jsonData) {
         logger.debug(format("Got request with Token: {0} and JSON: {1}", templateToken, jsonData));
         String generatedPackageName = "";
+        Object deserializedObject;
         try {
             byte[] template = templateRepository.findByToken(templateToken);
             if (template == null) {
@@ -67,22 +63,16 @@ public class XlsResource {
 
             if(jsonData.startsWith("[")){
                 //Able to handle json array
-                
-                Map<String, Object> beans = new HashMap<>();
-                beans.put(ROOT_DATA_OBJECT, objectDeserializer.makeJsonList(generatedPackageName,
-                    jsonData));
-                byte[] generatedExcel = excelUtil.generateExcel(beans, template);
-                String generatedExcelToken = UUIDUtils.newUUID();
-                excelRepository.add(generatedExcelToken, templateToken, generatedExcel);
-
-                return ResponseFactory.created(URI.create("/xls/" + generatedExcelToken).toString());
-            }
-            
-            
-            generatedPackageName = converter.generateJavaClasses(jsonData);
+                deserializedObject = objectDeserializer.makeJsonList(generatedPackageName,
+                    jsonData);
+            }else{
+                generatedPackageName = converter.generateJavaClasses(jsonData);
+                deserializedObject = objectDeserializer.makeJsonObject(generatedPackageName,
+                    jsonData);
+            }  
             
             Map<String, Object> beans = new HashMap<>();
-            beans.put(ROOT_DATA_OBJECT, objectDeserializer.makeJsonObject(generatedPackageName, jsonData));
+            beans.put(ROOT_DATA_OBJECT, deserializedObject);
             byte[] generatedExcel = excelUtil.generateExcel(beans, template);
             String generatedExcelToken = UUIDUtils.newUUID();
             excelRepository.add(generatedExcelToken, templateToken, generatedExcel);

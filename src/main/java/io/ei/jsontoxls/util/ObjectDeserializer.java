@@ -45,7 +45,6 @@ public class ObjectDeserializer {
         ClassLoader classLoader = new ChildURLClassLoader(urls);
 
         Thread.currentThread().setContextClassLoader(classLoader);
-        Class aClass = classLoader.loadClass(generatedPackageName + "." + this.className);
         Type listType = new TypeToken<List<Object>>(){}.getType();
         Object object = new Gson().fromJson(jsonString, listType);
         Thread.currentThread().setContextClassLoader(defaultClassLoader);
