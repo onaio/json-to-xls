@@ -1,9 +1,11 @@
 package io.ei.jsontoxls.resources;
 
+import io.ei.jsontoxls.AllConstants;
 import io.ei.jsontoxls.Messages;
 import io.ei.jsontoxls.repository.TemplateRepository;
 import io.ei.jsontoxls.util.ExcelUtils;
 import io.ei.jsontoxls.util.ResponseFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,7 +88,8 @@ public class TemplateResource {
             return ResponseFactory.notFound(MessageFormat.format(Messages.INVALID_TEMPLATE_TOKEN, token));
         }
 
-        return ResponseFactory.excel(getExcelAsOutputStream(generatedExcel));
+        return ResponseFactory.excel(getExcelAsOutputStream(generatedExcel),
+        		token + "."+AllConstants.DEFAULT_EXTENSION);
     }
 
     private StreamingOutput getExcelAsOutputStream(final byte[] excelBytes) {

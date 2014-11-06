@@ -1,9 +1,11 @@
 package io.ei.jsontoxls.resources;
 
+import io.ei.jsontoxls.AllConstants;
 import io.ei.jsontoxls.Messages;
 import io.ei.jsontoxls.repository.ExcelRepository;
 import io.ei.jsontoxls.repository.TemplateRepository;
 import io.ei.jsontoxls.util.*;
+
 import org.codehaus.jackson.JsonParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
@@ -98,7 +101,8 @@ public class XlsResource {
             return ResponseFactory.notFound(MessageFormat.format(Messages.INVALID_EXCEL_TOKEN, token));
         }
 
-        return ResponseFactory.excel(getExcelAsOutputStream(generatedExcel));
+        return ResponseFactory.excel(getExcelAsOutputStream(generatedExcel),
+        		token + "."+AllConstants.DEFAULT_EXTENSION);
     }
 
     private StreamingOutput getExcelAsOutputStream(final byte[] excelBytes) {

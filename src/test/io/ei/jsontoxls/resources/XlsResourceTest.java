@@ -1,11 +1,14 @@
 package io.ei.jsontoxls.resources;
 
+import java.util.Map;
+
 import io.ei.jsontoxls.repository.ExcelRepository;
 import io.ei.jsontoxls.repository.TemplateRepository;
 import io.ei.jsontoxls.util.ExcelUtils;
 import io.ei.jsontoxls.util.JsonPojoConverter;
 import io.ei.jsontoxls.util.ObjectDeserializer;
 import io.ei.jsontoxls.util.PackageUtils;
+
 import org.codehaus.jackson.JsonParseException;
 import org.junit.Before;
 import org.junit.Test;
@@ -129,6 +132,8 @@ public class XlsResourceTest {
         Response response = xlsResource.get("token");
 
         assertEquals(200, response.getStatus());
+        Map metadata = response.getMetadata();
+        assertEquals(2, metadata.size());
         verify(excelRepository).findByToken("token");
     }
 

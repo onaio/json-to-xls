@@ -8,4 +8,5 @@ public class AllConstants {
     public static final String MEDIA_TYPE_MS_EXCEL = "application/ms-excel";
     public static final String TOKEN_PATH_PARAM = "token";
     public static final String ROOT_DATA_OBJECT = "data";
+    public static final String DEFAULT_EXTENSION = "xls";
 }

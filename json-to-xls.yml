@@ -2,8 +2,8 @@ apiDetailsFile: api.txt
 
 database:
   driverClass: org.postgresql.Driver
-  user: postgres
-  password: password
+  user: onadata
+  password: secret
   url: jdbc:postgresql://localhost/json_to_xls/
   properties:
     charSet: UTF-8

@@ -1,7 +1,10 @@
 package io.ei.jsontoxls.resources;
 
+import java.util.Map;
+
 import io.ei.jsontoxls.repository.TemplateRepository;
 import io.ei.jsontoxls.util.ExcelUtils;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -114,6 +117,8 @@ public class TemplateResourceTest {
         Response response = resource.get(token);
 
         assertEquals(200, response.getStatus());
+        Map metadata = response.getMetadata();
+        assertEquals(2, metadata.size());
         verify(repository).findByToken(token);
     }
 

@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'application'
+apply plugin: 'eclipse'
 
 group = 'io.ei.jsontoxls'
 version = '1.0-SNAPSHOT'
