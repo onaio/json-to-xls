@@ -21,7 +21,8 @@ public class ResponseFactory {
                 .ok()
                 .entity(entity)
                 .type(MEDIA_TYPE_MS_EXCEL)
-                .header("Content-Disposition", "attachment; filename="+filename)
+                .header("Content-Disposition",
+                		"attachment; filename=" + filename)
                 .build();
     }
 
