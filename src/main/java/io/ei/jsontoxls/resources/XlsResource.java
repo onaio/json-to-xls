@@ -72,8 +72,8 @@ public class XlsResource {
                 generatedPackageName = converter.generateJavaClasses(jsonData);
                 deserializedObject = objectDeserializer.makeJsonObject(generatedPackageName,
                     jsonData);
-            }  
-            
+            }
+
             Map<String, Object> beans = new HashMap<>();
             beans.put(ROOT_DATA_OBJECT, deserializedObject);
             byte[] generatedExcel = excelUtil.generateExcel(beans, template);
@@ -103,7 +103,7 @@ public class XlsResource {
 
         String filename = token + "." + AllConstants.DEFAULT_EXTENSION;
         return ResponseFactory.excel(getExcelAsOutputStream(generatedExcel),
-        							 filename);
+                                     filename);
     }
 
     private StreamingOutput getExcelAsOutputStream(final byte[] excelBytes) {

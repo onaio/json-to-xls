@@ -90,7 +90,7 @@ public class TemplateResource {
 
         String filename = token + "." + AllConstants.DEFAULT_EXTENSION;
         return ResponseFactory.excel(getExcelAsOutputStream(generatedExcel),
-        							 filename);
+                                     filename);
     }
 
     private StreamingOutput getExcelAsOutputStream(final byte[] excelBytes) {
