@@ -88,8 +88,9 @@ public class TemplateResource {
             return ResponseFactory.notFound(MessageFormat.format(Messages.INVALID_TEMPLATE_TOKEN, token));
         }
 
+        String filename = token + "." + AllConstants.DEFAULT_EXTENSION;
         return ResponseFactory.excel(getExcelAsOutputStream(generatedExcel),
-        		token + "."+AllConstants.DEFAULT_EXTENSION);
+        							 filename);
     }
 
     private StreamingOutput getExcelAsOutputStream(final byte[] excelBytes) {
