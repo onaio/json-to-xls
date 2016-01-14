@@ -16,3 +16,4 @@ output/
 .class
 out/
 /bin/
+.nb-gradle/

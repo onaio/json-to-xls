@@ -1,6 +1,6 @@
 package io.ei.jsontoxls;
 
-import com.yammer.dropwizard.config.Environment;
+import io.dropwizard.setup.Environment;
 import io.ei.jsontoxls.filter.CorsFilter;
 import io.ei.jsontoxls.repository.ExcelRepository;
 import io.ei.jsontoxls.repository.TemplateRepository;
@@ -31,7 +31,7 @@ public class Context {
 
     public Context updateEnvironment(Environment environment) {
         this.environment = environment;
-        this.environment.addFilter(CorsFilter.class, "/*");
+        //this.environment.addFilter(CorsFilter.class, "/*");
         return this;
     }
 

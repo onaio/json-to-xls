@@ -1,24 +1,29 @@
 package io.ei.jsontoxls;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.yammer.dropwizard.config.Configuration;
-import com.yammer.dropwizard.db.DatabaseConfiguration;
+import io.dropwizard.Configuration;
+import io.dropwizard.db.DataSourceFactory;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+/**
+ * Main configuration file for json to xls application
+ * @author denniswambus
+ * @email dwambua@ona.io
+ */
 public class JsonToXlsConfiguration extends Configuration {
     @Valid
     @NotNull
     @JsonProperty
-    private DatabaseConfiguration database = new DatabaseConfiguration();
+     private DataSourceFactory database = new DataSourceFactory();
 
     @Valid
     @NotNull
     @JsonProperty
     private String apiDetailsFile;
 
-    public DatabaseConfiguration getDatabaseConfiguration() {
+    public DataSourceFactory getDataSourceFactory() {
         return database;
     }
 
