@@ -3,7 +3,7 @@ package io.ei.jsontoxls;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
 import io.dropwizard.db.DataSourceFactory;
-
+import org.hibernate.validator.constraints.NotEmpty;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -19,7 +19,7 @@ public class JsonToXlsConfiguration extends Configuration {
      private DataSourceFactory database = new DataSourceFactory();
 
     @Valid
-    @NotNull
+    @NotEmpty
     @JsonProperty
     private String apiDetailsFile;
 

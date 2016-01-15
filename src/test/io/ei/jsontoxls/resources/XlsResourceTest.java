@@ -62,13 +62,13 @@ public class XlsResourceTest {
         when(templateRepository.findByToken("template_token")).thenReturn(template);
         when(converter.generateJavaClasses(dataJson)).thenReturn("generated-package-name");
         when(objectDeserializer.makeJsonObject("generated-package-name", dataJson)).thenReturn(new Object());
-        when(excelUtil.generateExcel(anyMap(), eq(template)))
+        when(excelUtil.generateExcel(anyMap(), eq(template), "uuid"))
                 .thenReturn(generatedExcel);
 
         Response response = xlsResource.generateExcelFromTemplate("template_token", dataJson);
 
         assertEquals(response.getStatus(), 201);
-        verify(excelUtil).generateExcel(anyMap(), eq(template));
+        verify(excelUtil).generateExcel(anyMap(), eq(template), "uuid");
         verify(excelRepository).add(anyString(), eq("template_token"), eq(generatedExcel));
         verify(packageUtil).cleanup("generated-package-name");
     }
@@ -176,13 +176,13 @@ public class XlsResourceTest {
         when(templateRepository.findByToken("template_token")).thenReturn(template);
         when(converter.generateJavaClasses(dataJson)).thenReturn("generated-package-name");
         when(objectDeserializer.makeJsonList("generated-package-name", dataJson)).thenReturn(new Object());
-        when(excelUtil.generateExcel(anyMap(), eq(template)))
+        when(excelUtil.generateExcel(anyMap(), eq(template), "uuid"))
                 .thenReturn(generatedExcel);
 
         Response response = xlsResource.generateExcelFromTemplate("template_token", dataJson);
 
         assertEquals(response.getStatus(), 201);
-        verify(excelUtil).generateExcel(anyMap(), eq(template));
+        verify(excelUtil).generateExcel(anyMap(), eq(template), "uuid");
         verify(excelRepository).add(anyString(), eq("template_token"), eq(generatedExcel));
     }
 }

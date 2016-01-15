@@ -76,8 +76,9 @@ public class XlsResource {
 
             Map<String, Object> beans = new HashMap<>();
             beans.put(ROOT_DATA_OBJECT, deserializedObject);
-            byte[] generatedExcel = excelUtil.generateExcel(beans, template);
             String generatedExcelToken = UUIDUtils.newUUID();
+            byte[] generatedExcel = excelUtil.generateExcel(beans, template, generatedExcelToken);
+
             excelRepository.add(generatedExcelToken, templateToken, generatedExcel);
             return ResponseFactory.created(URI.create("/xls/" + generatedExcelToken).toString());
         } catch (JsonParseException e) {

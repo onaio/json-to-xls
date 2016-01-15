@@ -7,8 +7,13 @@ group = 'io.ei.jsontoxls'
 version = '2.0-SNAPSHOT'
 ext.packaging = 'tar'
 mainClassName = 'io.ei.jsontoxls.JsonToXlsService'
-sourceCompatibility = '1.7'
-targetCompatibility = '1.7'
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
 
 project.ext {
     dropwizardVersion = '0.9.1'
@@ -25,7 +30,6 @@ dependencies {
     compile group: 'io.dropwizard', name: 'dropwizard-jdbi', version: dropwizardVersion
     compile group: 'io.dropwizard', name: 'dropwizard-migrations', version: dropwizardVersion
     compile group: 'io.dropwizard', name: 'dropwizard-testing', version: dropwizardVersion
-    compile group: 'io.dropwizard', name: 'dropwizard-hibernate', version: dropwizardVersion
     compile group: 'org.jxls', name: 'jxls', version: '2.2.8'
     compile group: 'org.jxls', name: 'jxls-poi', version: '1.0.6'
     compile group: 'com.google.code.gson', name: 'gson', version: '2.5'
