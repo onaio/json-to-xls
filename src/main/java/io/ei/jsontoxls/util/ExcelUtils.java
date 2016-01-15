@@ -31,6 +31,6 @@ public class ExcelUtils {
             JxlsHelper.getInstance().processTemplate(new ByteArrayInputStream(template), os, context);
         }
 
-        return IOUtils.toByteArray(new FileInputStream(filePath));
+        return IOUtils.toByteArray(new BufferedInputStream(new FileInputStream(filePath)));
     }
 }
