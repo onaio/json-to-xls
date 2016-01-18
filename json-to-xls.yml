@@ -18,10 +18,10 @@ database:
 logging:
   appenders:
      - type: console
-       threshold: WARN
+       threshold: ERROR
        target: stderr
      - type: file
-       threshold: INFO
+       threshold: ERROR
        currentLogFilename: ./logs/json_to_xls.log
        archivedLogFilenamePattern: ./logs/json_to_xls_%d.log.gz
        archivedFileCount: 5

@@ -4,10 +4,7 @@ import java.util.Map;
 
 import io.ei.jsontoxls.repository.ExcelRepository;
 import io.ei.jsontoxls.repository.TemplateRepository;
-import io.ei.jsontoxls.util.ExcelUtils;
-import io.ei.jsontoxls.util.JsonPojoConverter;
-import io.ei.jsontoxls.util.ObjectDeserializer;
-import io.ei.jsontoxls.util.PackageUtils;
+import io.ei.jsontoxls.util.*;
 
 import org.codehaus.jackson.JsonParseException;
 import org.junit.Before;
@@ -17,6 +14,7 @@ import org.mockito.Mock;
 import javax.ws.rs.core.Response;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -62,13 +60,14 @@ public class XlsResourceTest {
         when(templateRepository.findByToken("template_token")).thenReturn(template);
         when(converter.generateJavaClasses(dataJson)).thenReturn("generated-package-name");
         when(objectDeserializer.makeJsonObject("generated-package-name", dataJson)).thenReturn(new Object());
-        when(excelUtil.generateExcel(anyMap(), eq(template), "uuid"))
+        String gen_uuid = UUIDUtils.newUUID();
+        when(excelUtil.generateExcel(anyMap(), eq(template), anyString()))
                 .thenReturn(generatedExcel);
 
         Response response = xlsResource.generateExcelFromTemplate("template_token", dataJson);
 
         assertEquals(response.getStatus(), 201);
-        verify(excelUtil).generateExcel(anyMap(), eq(template), "uuid");
+        verify(excelUtil).generateExcel(anyMap(), eq(template), anyString());
         verify(excelRepository).add(anyString(), eq("template_token"), eq(generatedExcel));
         verify(packageUtil).cleanup("generated-package-name");
     }
@@ -176,13 +175,13 @@ public class XlsResourceTest {
         when(templateRepository.findByToken("template_token")).thenReturn(template);
         when(converter.generateJavaClasses(dataJson)).thenReturn("generated-package-name");
         when(objectDeserializer.makeJsonList("generated-package-name", dataJson)).thenReturn(new Object());
-        when(excelUtil.generateExcel(anyMap(), eq(template), "uuid"))
+        when(excelUtil.generateExcel(anyMap(), eq(template), anyString()))
                 .thenReturn(generatedExcel);
 
         Response response = xlsResource.generateExcelFromTemplate("template_token", dataJson);
 
         assertEquals(response.getStatus(), 201);
-        verify(excelUtil).generateExcel(anyMap(), eq(template), "uuid");
+        verify(excelUtil).generateExcel(anyMap(), eq(template), anyString());
         verify(excelRepository).add(anyString(), eq("template_token"), eq(generatedExcel));
     }
 }
