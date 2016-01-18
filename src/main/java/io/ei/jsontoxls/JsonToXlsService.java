@@ -1,5 +1,6 @@
 package io.ei.jsontoxls;
 
+import de.spinscale.dropwizard.jobs.JobsBundle;
 import io.dropwizard.Application;
 import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.setup.Bootstrap;
@@ -32,6 +33,8 @@ public class JsonToXlsService extends Application<JsonToXlsConfiguration> {
                 return configuration.getDataSourceFactory();
             }
         });
+
+        bootstrap.addBundle(new JobsBundle("io.ei.jsontoxls"));
     }
 
     @Override
