@@ -1,10 +1,13 @@
 package io.ei.jsontoxls;
 
-import com.yammer.dropwizard.config.Environment;
+import io.dropwizard.setup.Environment;
 import io.ei.jsontoxls.filter.CorsFilter;
 import io.ei.jsontoxls.repository.ExcelRepository;
 import io.ei.jsontoxls.repository.TemplateRepository;
 import org.skife.jdbi.v2.DBI;
+
+import javax.servlet.DispatcherType;
+import java.util.EnumSet;
 
 public class Context {
     private static Context context;
@@ -31,7 +34,8 @@ public class Context {
 
     public Context updateEnvironment(Environment environment) {
         this.environment = environment;
-        this.environment.addFilter(CorsFilter.class, "/*");
+        this.environment.servlets().addFilter("CorsFilter", CorsFilter.class).
+                addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "/*");;
         return this;
     }
 

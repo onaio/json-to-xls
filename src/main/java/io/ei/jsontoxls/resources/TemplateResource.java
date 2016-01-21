@@ -22,7 +22,7 @@ import static io.ei.jsontoxls.AllConstants.MEDIA_TYPE_MS_EXCEL;
 import static io.ei.jsontoxls.AllConstants.TOKEN_PATH_PARAM;
 import static io.ei.jsontoxls.util.UUIDUtils.newUUID;
 import static java.text.MessageFormat.format;
-import static org.apache.commons.lang.exception.ExceptionUtils.getFullStackTrace;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 
 @Path("/templates")
 public class TemplateResource {
@@ -50,7 +50,7 @@ public class TemplateResource {
             return ResponseFactory.created(token);
         } catch (Exception e) {
             logger.error(format("Unable to save template. Exception Message: {0}. Stack trace: {1}.", e.getMessage(),
-                    getFullStackTrace(e)));
+                    getStackTrace(e)));
             return ResponseFactory.internalServerError(Messages.UNABLE_TO_SAVE_TEMPLATE);
         }
     }
@@ -74,7 +74,7 @@ public class TemplateResource {
             return ResponseFactory.ok(templateToken);
         } catch (Exception e) {
             logger.error(format("Unable to update template. Exception Message: {0}. Stack trace: {1}.", e.getMessage(),
-                    getFullStackTrace(e)));
+                    getStackTrace(e)));
             return ResponseFactory.internalServerError(Messages.UNABLE_TO_UPDATE_TEMPLATE);
         }
     }

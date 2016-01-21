@@ -1,7 +1,7 @@
 package io.ei.jsontoxls.util;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,15 +19,18 @@ public class PackageUtils {
     }
 
     public void cleanup(String packageName) {
-        File packageDirectory = new File(this.outputDirectory + "/" + packageName.replace(".", "/"));
+        File packageDirectory = new File(this.outputDirectory + "/" 
+                + packageName.replace(".", "/"));
         try {
             if (packageDirectory.exists()) {
-                logger.info(format("Attempting to delete directory: {0}", packageDirectory.getPath()));
+                logger.info(format("Attempting to delete directory: {0}",
+                        packageDirectory.getPath()));
                 FileUtils.forceDelete(packageDirectory);
             }
         } catch (IOException e) {
-            logger.error(format("Cleanup of package failed. Exception Message: {0}. Stack trace: {1}", e.getMessage(),
-                    ExceptionUtils.getFullStackTrace(e)));
+            logger.error(format("Cleanup of package failed. Exception Message: "
+                    + "{0}. Stack trace: {1}", e.getMessage(),
+                    ExceptionUtils.getStackTrace(e)));
         }
     }
 }

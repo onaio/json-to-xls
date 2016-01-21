@@ -25,8 +25,8 @@ import java.util.Map;
 import static io.ei.jsontoxls.AllConstants.*;
 import static io.ei.jsontoxls.util.ResponseFactory.*;
 import static java.text.MessageFormat.format;
-import static org.apache.commons.lang.StringUtils.isBlank;
-import static org.apache.commons.lang.exception.ExceptionUtils.getFullStackTrace;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 
 @Path("/xls/{" + TOKEN_PATH_PARAM + "}")
 public class XlsResource {
@@ -76,17 +76,18 @@ public class XlsResource {
 
             Map<String, Object> beans = new HashMap<>();
             beans.put(ROOT_DATA_OBJECT, deserializedObject);
-            byte[] generatedExcel = excelUtil.generateExcel(beans, template);
             String generatedExcelToken = UUIDUtils.newUUID();
+            byte[] generatedExcel = excelUtil.generateExcel(beans, template, generatedExcelToken);
+
             excelRepository.add(generatedExcelToken, templateToken, generatedExcel);
             return ResponseFactory.created(URI.create("/xls/" + generatedExcelToken).toString());
         } catch (JsonParseException e) {
             logger.error(format(Messages.MALFORMED_JSON, e.getMessage(),
-                    getFullStackTrace(e)));
+                    getStackTrace(e)));
             return badRequest(Messages.MALFORMED_JSON);
         } catch (Exception e) {
             logger.error(format(Messages.TRANSFORMATION_FAILURE, e.getMessage(),
-                    getFullStackTrace(e)));
+                    getStackTrace(e)));
             return internalServerError(Messages.UNABLE_TO_GENERATE_EXCEL_ERROR);
         } finally {
             packageUtil.cleanup(generatedPackageName);

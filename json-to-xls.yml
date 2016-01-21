@@ -4,7 +4,7 @@ database:
   driverClass: org.postgresql.Driver
   user: postgres
   password: password
-  url: jdbc:postgresql://localhost/json_to_xls/
+  url: jdbc:postgresql://localhost/json_to_xls
   properties:
     charSet: UTF-8
   maxWaitForConnection: 5s
@@ -12,17 +12,17 @@ database:
   minSize: 8
   maxSize: 32
   checkConnectionWhileIdle: false
-  checkConnectionHealthWhenIdleFor: 10s
-  closeConnectionIfIdleFor: 1 minute
+  evictionInterval: 10s
+  minIdleTime: 1 minute
 
 logging:
-  console:
-    enabled: true
-    threshold: ALL
-  file:
-    enabled: true
-    threshold: ALL
-    currentLogFilename: ./logs/json_to_xls.log
-    archivedLogFilenamePattern: ./logs/json_to_xls_%d.log.gz
-    archivedFileCount: 10
-    timeZone: IST
+  appenders:
+     - type: console
+       threshold: ERROR
+       target: stderr
+     - type: file
+       threshold: ERROR
+       currentLogFilename: ./logs/json_to_xls.log
+       archivedLogFilenamePattern: ./logs/json_to_xls_%d.log.gz
+       archivedFileCount: 5
+       timeZone: UTC

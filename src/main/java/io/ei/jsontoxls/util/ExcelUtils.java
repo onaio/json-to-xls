@@ -1,13 +1,14 @@
 package io.ei.jsontoxls.util;
 
-import net.sf.jxls.transformer.XLSTransformer;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import static java.text.MessageFormat.format;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.jxls.common.Context;
+import org.jxls.util.JxlsHelper;
+import org.apache.commons.io.IOUtils;
+
+import java.io.*;
 import java.util.Map;
 
 public class ExcelUtils {
@@ -22,11 +23,14 @@ public class ExcelUtils {
     }
 
     public byte[] generateExcel(Map<String, Object> beans,
-                                byte[] template) throws InvalidFormatException, IOException {
-        XLSTransformer transformer = new XLSTransformer();
-        Workbook workbook = transformer.transformXLS(new ByteArrayInputStream(template), beans);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        workbook.write(outputStream);
-        return outputStream.toByteArray();
+                                byte[] template, String uuid) throws InvalidFormatException, IOException {
+
+        String filePath = format("/tmp/{0}.xls", uuid);
+        try (OutputStream os = new FileOutputStream(filePath)) {
+            Context context = new Context(beans);
+            JxlsHelper.getInstance().processTemplate(new ByteArrayInputStream(template), os, context);
+        }
+
+        return IOUtils.toByteArray(new BufferedInputStream(new FileInputStream(filePath)));
     }
 }
