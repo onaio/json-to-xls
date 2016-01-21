@@ -1,5 +1,7 @@
 ##JSON-to-XLS SERVICE
 
+Note: Upgraded to jxls 2.\*.\* which is not compatible with jxls 1.\*.\*
+
 This is a service that can be used to generate XLS files from given XLS template and data in JSON format
 
 The following are the dependencies to run this project:
