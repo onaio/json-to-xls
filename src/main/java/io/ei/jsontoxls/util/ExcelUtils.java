@@ -28,7 +28,9 @@ public class ExcelUtils {
         String filePath = format("/tmp/{0}.xls", uuid);
         try (OutputStream os = new FileOutputStream(filePath)) {
             Context context = new Context(beans);
-            JxlsHelper.getInstance().processTemplate(new ByteArrayInputStream(template), os, context);
+            JxlsHelper jxlsHelper = JxlsHelper.getInstance();
+            jxlsHelper.setUseFastFormulaProcessor(false);
+            jxlsHelper.processTemplate(new ByteArrayInputStream(template), os, context);
         }
 
         return IOUtils.toByteArray(new BufferedInputStream(new FileInputStream(filePath)));
